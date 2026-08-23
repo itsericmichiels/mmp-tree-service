@@ -610,6 +610,7 @@ Append to `app/globals.css`:
 a.dropdown__row:hover{ background: var(--cream); color: var(--green-dark); }
 .dropdown__row--muted{ color: var(--ink-soft); opacity:.55; cursor:default; }
 .dropdown__row--muted:hover{ background:none; }
+.dropdown__row-wrapper{ position:relative; }
 .dropdown__flyout{
   display:none;
   position:absolute;
@@ -621,8 +622,8 @@ a.dropdown__row:hover{ background: var(--cream); color: var(--green-dark); }
   min-width: 240px;
   padding: 8px;
 }
-.dropdown__row:hover .dropdown__flyout,
-.dropdown__row:focus-within .dropdown__flyout{ display:block; }
+.dropdown__row-wrapper:hover .dropdown__flyout,
+.dropdown__row-wrapper:focus-within .dropdown__flyout{ display:block; }
 ```
 
 - [ ] **Step 3: Verify the app still builds**
@@ -745,13 +746,22 @@ describe("SiteHeader", () => {
 
   it("renders Canton's 5 services as flyout links", () => {
     render(<SiteHeader />);
-    expect(screen.getByRole("link", { name: /tree removal/i })).toHaveAttribute(
-      "href",
-      "/tree-removal-canton-ga"
-    );
-    expect(
-      screen.getByRole("link", { name: /emergency tree service/i })
-    ).toHaveAttribute("href", "/emergency-tree-service-canton-ga");
+    // "Tree Removal" and "Emergency Tree Service" each appear twice by
+    // design: once in the top-level Services dropdown (which points at
+    // Canton by default) and once in the Service Area > Canton flyout.
+    // Both instances must point at the same, correct URL.
+    const removalLinks = screen.getAllByRole("link", { name: /tree removal/i });
+    expect(removalLinks.length).toBeGreaterThanOrEqual(1);
+    for (const link of removalLinks) {
+      expect(link).toHaveAttribute("href", "/tree-removal-canton-ga");
+    }
+    const emergencyLinks = screen.getAllByRole("link", {
+      name: /emergency tree service/i,
+    });
+    expect(emergencyLinks.length).toBeGreaterThanOrEqual(1);
+    for (const link of emergencyLinks) {
+      expect(link).toHaveAttribute("href", "/emergency-tree-service-canton-ga");
+    }
   });
 
   it("renders un-built cities as non-clickable text, not links", () => {
@@ -847,12 +857,10 @@ export function SiteHeader() {
               <div className="dropdown__panel">
                 {CITIES.map((city) =>
                   city.isBuilt ? (
-                    <Link
-                      key={city.slug}
-                      href={`/${citySlug(city)}`}
-                      className="dropdown__row"
-                    >
-                      {city.name}
+                    <div key={city.slug} className="dropdown__row-wrapper">
+                      <Link href={`/${citySlug(city)}`} className="dropdown__row">
+                        {city.name}
+                      </Link>
                       <div className="dropdown__flyout">
                         {SERVICES.map((service) => (
                           <Link
@@ -864,7 +872,7 @@ export function SiteHeader() {
                           </Link>
                         ))}
                       </div>
-                    </Link>
+                    </div>
                   ) : (
                     <span
                       key={city.slug}
