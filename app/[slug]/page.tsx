@@ -1,12 +1,59 @@
 // app/[slug]/page.tsx
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { resolveSlug, builtSlugs } from "@/lib/slugs";
 import { CITY_CONTENT } from "@/content";
 import { CityHubTemplate } from "@/components/CityHubTemplate";
 import { ServiceCityTemplate } from "@/components/ServiceCityTemplate";
 
+const DEFAULT_METADATA: Metadata = {
+  title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
+  description:
+    "Licensed & insured tree removal, trimming, stump grinding, and 24/7 emergency tree service across North Metro Atlanta.",
+};
+
+function truncate(text: string, maxLength = 160): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
 export function generateStaticParams() {
   return builtSlugs().map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const resolved = resolveSlug(slug);
+
+  if (!resolved) {
+    return DEFAULT_METADATA;
+  }
+
+  const content = CITY_CONTENT[resolved.city.slug];
+
+  if (!content) {
+    return DEFAULT_METADATA;
+  }
+
+  if (resolved.type === "hub") {
+    return {
+      title: `Tree Service in ${resolved.city.name} | MMP Tree Service LLC`,
+      description: truncate(content.hub.intro),
+    };
+  }
+
+  const serviceContent = content.services[resolved.service.slug];
+
+  return {
+    title: `${resolved.service.name} in ${resolved.city.name} | MMP Tree Service LLC`,
+    description: serviceContent
+      ? truncate(serviceContent.intro)
+      : DEFAULT_METADATA.description,
+  };
 }
 
 export default async function CityOrServicePage({
