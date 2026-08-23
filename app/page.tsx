@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CITIES } from "@/lib/cities";
-import { serviceCitySlug } from "@/lib/slugs";
+import { citySlug, serviceCitySlug } from "@/lib/slugs";
 import { SERVICES } from "@/lib/services";
 import { MapEmbed } from "@/components/MapEmbed";
 import { EstimateForm } from "@/components/EstimateForm";
@@ -80,7 +80,7 @@ export default function HomePage() {
           <div className="area-grid">
             {CITIES.slice(0, 8).map((city) =>
               city.isBuilt ? (
-                <Link key={city.slug} className="area-chip" href={`/tree-service-${city.slug}-ga`}>
+                <Link key={city.slug} className="area-chip" href={`/${citySlug(city)}`}>
                   {city.name} <span className="arrow">→</span>
                 </Link>
               ) : (

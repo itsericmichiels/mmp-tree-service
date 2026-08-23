@@ -188,7 +188,7 @@ export const CANTON_CONTENT: CityContent = {
         {
           question: "What happens to the cleared debris?",
           answer:
-            "We hall debris off-site by default, though some clients choose to have wood chipped and left on-site for erosion control during construction.",
+            "We haul debris off-site by default, though some clients choose to have wood chipped and left on-site for erosion control during construction.",
         },
         {
           question: "Do you work with builders directly?",
