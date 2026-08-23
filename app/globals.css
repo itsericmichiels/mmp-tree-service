@@ -358,7 +358,7 @@ img{ max-width:100%; display:block; }
   transition: border-color .15s ease, background .15s ease;
 }
 .area-chip:hover{ border-color: var(--green); background: var(--cream); }
-.area-chip span.arrow{ color: var(--orange); font-weight:900; }
+.area-chip span.arrow{ color: var(--green); font-weight:900; }
 .area-chip--muted{
   color: var(--ink-soft);
   cursor:default;
