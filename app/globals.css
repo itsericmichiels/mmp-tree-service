@@ -32,7 +32,7 @@
 html{ scroll-behavior: smooth; }
 body{
   margin:0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--ink);
   background: var(--white);
   line-height: 1.6;
@@ -40,7 +40,7 @@ body{
   padding-bottom: 64px;    /* space for sticky bottom bar */
 }
 h1,h2,h3,h4{
-  font-family: 'Poppins', 'Inter', sans-serif;
+  font-family: var(--font-poppins), 'Poppins', var(--font-inter), 'Inter', sans-serif;
   color: var(--green-deep);
   line-height: 1.2;
   margin: 0 0 .5em;
@@ -151,7 +151,7 @@ img{ max-width:100%; display:block; }
 }
 .nav__brand{ display:flex; align-items:center; gap:12px; }
 .nav__brand img{ height:56px; width:auto; }
-.nav__brand-text{ font-family:'Poppins',sans-serif; font-weight:700; color:var(--green-deep); line-height:1.1; }
+.nav__brand-text{ font-family: var(--font-poppins), 'Poppins', sans-serif; font-weight:700; color:var(--green-deep); line-height:1.1; }
 .nav__brand-text small{ display:block; font-weight:500; color: var(--ink-soft); font-size:.7rem; letter-spacing:.05em; }
 .nav__links{ display:flex; align-items:center; gap: 26px; }
 .nav__links a{
@@ -376,7 +376,7 @@ img{ max-width:100%; display:block; }
 .footer-grid li{ margin-bottom:9px; font-size:.88rem; }
 .footer-brand{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .footer-brand img{ height:44px; }
-.footer-brand strong{ color:#fff; font-family:'Poppins',sans-serif; }
+.footer-brand strong{ color:#fff; font-family: var(--font-poppins), 'Poppins', sans-serif; }
 .footer-bottom{
   border-top: 1px solid rgba(255,255,255,.15);
   margin-top: 40px;
