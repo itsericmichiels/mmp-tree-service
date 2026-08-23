@@ -163,7 +163,16 @@ img{ max-width:100%; display:block; }
 .nav__cta{ display:flex; align-items:center; gap:16px; }
 .nav__phone{ font-weight:700; color: var(--green-deep); white-space:nowrap; }
 .nav__phone small{ display:block; font-weight:500; color: var(--ink-soft); font-size:.7rem; }
-.nav__menu-toggle{ display:none; }
+.nav__menu-toggle{
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-size:1.5rem;
+  line-height:1;
+  color: var(--green-deep);
+  padding: 6px 8px;
+}
 
 /* Sticky bottom CTA bar (mobile-first, visible on all sizes) -------------- */
 .sticky-cta{
@@ -460,3 +469,59 @@ a.dropdown__row:hover{ background: var(--cream); color: var(--green-dark); }
 }
 .dropdown__row-wrapper:hover .dropdown__flyout,
 .dropdown__row-wrapper:focus-within .dropdown__flyout{ display:block; }
+
+/* Dropdown triggers are real <button> elements (SiteHeader.tsx) so the
+   mega-menu can be opened with click or keyboard (Enter/Space), not just
+   CSS :hover/:focus-within. Reset default button chrome so they still look
+   like the .dropdown__row text they replace. */
+button.dropdown__trigger{
+  background:none;
+  border:none;
+  font: inherit;
+  width:100%;
+  text-align:left;
+  cursor:pointer;
+}
+
+/* Click/keyboard-driven open state for the dropdown panels, layered on top
+   of the hover/focus-within behavior above (either being true is enough to
+   open a panel). Declared after the base .dropdown__panel rule so it
+   reliably wins the display cascade. */
+.dropdown__panel.is-open{ display:block; }
+
+/* Mobile nav: hamburger toggle + stacked, click-driven menu ---------------- */
+@media (max-width: 980px){
+  .nav__menu-toggle{ display:inline-flex; align-items:center; justify-content:center; }
+  .nav__links{
+    display:none;
+    position:absolute;
+    top:100%; left:0; right:0;
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+    background:#fff;
+    padding: 8px 24px 24px;
+    box-shadow: var(--shadow);
+    max-height: calc(100vh - 84px);
+    overflow-y:auto;
+  }
+  .nav__links.is-open{ display:flex; }
+  .nav__links > a{ padding:12px 0; border-bottom:1px solid var(--line); }
+  .dropdown{ width:100%; }
+  .dropdown__panel{
+    position:static;
+    box-shadow:none;
+    border:none;
+    min-width:0;
+    width:100%;
+    padding-left:14px;
+  }
+  .dropdown__flyout{
+    position:static;
+    box-shadow:none;
+    border:none;
+    min-width:0;
+    width:100%;
+    padding-left:14px;
+  }
+}
