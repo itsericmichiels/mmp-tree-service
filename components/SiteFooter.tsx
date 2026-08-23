@@ -8,10 +8,7 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div>
             <div className="footer-brand">
-              <img
-                src="https://mmptreeservice.com/wp-content/uploads/2025/12/MMP-Tree-Service-logo.png"
-                alt="MMP Tree Service logo"
-              />
+              <img src="/mmp-logo.png" alt="MMP Tree Service logo" />
               <strong>MMP Tree Service LLC</strong>
             </div>
             <p>
