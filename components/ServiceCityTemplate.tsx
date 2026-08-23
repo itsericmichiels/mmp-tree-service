@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { City } from "@/lib/cities";
 import type { Service } from "@/lib/services";
 import { citySlug } from "@/lib/slugs";
-import type { ServicePageContent } from "@/content/canton";
+import type { ServicePageContent } from "@/content/types";
 import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
 

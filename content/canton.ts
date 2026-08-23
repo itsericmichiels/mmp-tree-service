@@ -1,16 +1,7 @@
 // content/canton.ts
-export type ServicePageContent = {
-  intro: string;
-  howItWorks: { title: string; body: string };
-  cost: { title: string; body: string };
-  localConsiderations: { title: string; body: string };
-  faqs: { question: string; answer: string }[];
-};
+import type { CityContent } from "./types";
 
-export const CANTON_CONTENT: {
-  hub: { intro: string; whyUs: string[] };
-  services: Record<string, ServicePageContent>;
-} = {
+export const CANTON_CONTENT: CityContent = {
   hub: {
     intro:
       "Canton, GA sits at the heart of Cherokee County, where new subdivisions push up against mature stands of pine and hardwood along the Etowah River. That mix — established tree canopy next to fresh construction — is exactly what keeps our crews busy here: storm-damaged hardwoods near Boling Park, pines thinned for new lots off Riverstone Parkway, and the clay-heavy Piedmont soil that makes stump removal tougher than it looks.",
