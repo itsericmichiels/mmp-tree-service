@@ -24,7 +24,7 @@ export function BlogPostForm({
 
   function handleTitleChange(value: string) {
     setTitle(value);
-    if (!slugTouched) {
+    if (slugEditable && !slugTouched) {
       setSlug(slugify(value));
     }
   }
