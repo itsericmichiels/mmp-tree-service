@@ -41,10 +41,10 @@ test("service area index lists 27 cities, only built cities linked", async ({ pa
   await page.goto("/service-areas");
   await expect(page.locator(".area-chip")).toHaveCount(27);
   // Built cities as of this test: Canton, Marietta, Woodstock, Alpharetta,
-  // Roswell, Sandy Springs, Kennesaw, Dunwoody, Smyrna, Milton. Update this
-  // count (and lib/cities.test.ts's matching assertion) when a new city's
-  // isBuilt flag flips to true.
-  await expect(page.locator("a.area-chip")).toHaveCount(10);
+  // Roswell, Sandy Springs, Kennesaw, Dunwoody, Smyrna, Milton, Norcross,
+  // Lilburn, Duluth. Update this count (and lib/cities.test.ts's matching
+  // assertion) when a new city's isBuilt flag flips to true.
+  await expect(page.locator("a.area-chip")).toHaveCount(13);
 });
 
 test("nav mega-menu reaches a Canton service page", async ({ page }) => {

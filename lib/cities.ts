@@ -49,6 +49,9 @@ const BUILT_CITY_NAMES = new Set([
   "Dunwoody",
   "Smyrna",
   "Milton",
+  "Norcross",
+  "Lilburn",
+  "Duluth",
 ]);
 
 export const CITIES: City[] = CITY_NAMES.map((name) => ({
