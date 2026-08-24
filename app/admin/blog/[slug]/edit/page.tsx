@@ -5,6 +5,10 @@ import { savePostAction } from "@/lib/blog-actions";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  robots: { index: false, follow: false },
+};
+
 export default async function EditBlogPostPage({
   params,
 }: {
