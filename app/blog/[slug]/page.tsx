@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug } from "@/lib/blog";
 import { renderMarkdownToHtml } from "@/lib/markdown";
@@ -51,9 +52,9 @@ export default async function BlogPostPage({
           <h3>Need Tree Service in North Metro Atlanta?</h3>
           <p>Get a free, no-obligation estimate from MMP Tree Service.</p>
         </div>
-        <a href="/contact" className="btn btn-orange">
+        <Link href="/contact" className="btn btn-orange">
           Get a Free Estimate
-        </a>
+        </Link>
       </section>
     </>
   );
