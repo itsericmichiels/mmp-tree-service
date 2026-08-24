@@ -13,6 +13,14 @@ describe("CITIES", () => {
 
   it("has exactly the built cities that have real content", () => {
     const built = CITIES.filter((c) => c.isBuilt).map((c) => c.slug).sort();
-    expect(built).toEqual(["alpharetta", "canton", "marietta", "woodstock"]);
+    expect(built).toEqual([
+      "alpharetta",
+      "canton",
+      "kennesaw",
+      "marietta",
+      "roswell",
+      "sandy-springs",
+      "woodstock",
+    ]);
   });
 });

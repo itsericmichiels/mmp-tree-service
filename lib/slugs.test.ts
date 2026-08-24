@@ -32,8 +32,8 @@ describe("resolveSlug", () => {
   });
 
   it("returns null for an un-built city", () => {
-    expect(resolveSlug("tree-service-roswell-ga")).toBeNull();
-    expect(resolveSlug("tree-removal-roswell-ga")).toBeNull();
+    expect(resolveSlug("tree-service-dunwoody-ga")).toBeNull();
+    expect(resolveSlug("tree-removal-dunwoody-ga")).toBeNull();
   });
 
   it("returns null for garbage input", () => {

@@ -9,10 +9,16 @@ import { CANTON_CONTENT } from "./canton";
 import { MARIETTA_CONTENT } from "./marietta";
 import { WOODSTOCK_CONTENT } from "./woodstock";
 import { ALPHARETTA_CONTENT } from "./alpharetta";
+import { ROSWELL_CONTENT } from "./roswell";
+import { SANDY_SPRINGS_CONTENT } from "./sandy-springs";
+import { KENNESAW_CONTENT } from "./kennesaw";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
   marietta: MARIETTA_CONTENT,
   woodstock: WOODSTOCK_CONTENT,
   alpharetta: ALPHARETTA_CONTENT,
+  roswell: ROSWELL_CONTENT,
+  "sandy-springs": SANDY_SPRINGS_CONTENT,
+  kennesaw: KENNESAW_CONTENT,
 };

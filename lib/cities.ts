@@ -38,7 +38,15 @@ function slugify(name: string): string {
   return name.toLowerCase().replace(/\s+/g, "-");
 }
 
-const BUILT_CITY_NAMES = new Set(["Canton", "Marietta", "Woodstock", "Alpharetta"]);
+const BUILT_CITY_NAMES = new Set([
+  "Canton",
+  "Marietta",
+  "Woodstock",
+  "Alpharetta",
+  "Roswell",
+  "Sandy Springs",
+  "Kennesaw",
+]);
 
 export const CITIES: City[] = CITY_NAMES.map((name) => ({
   slug: slugify(name),
