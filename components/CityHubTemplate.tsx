@@ -5,13 +5,14 @@ import { SERVICES } from "@/lib/services";
 import { serviceCitySlug } from "@/lib/slugs";
 import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
+import { MarkdownBlock } from "./MarkdownBlock";
 
 export function CityHubTemplate({
   city,
   content,
 }: {
   city: City;
-  content: { intro: string; whyUs: string[] };
+  content: { intro: string; overview: string; whyUs: string[] };
 }) {
   return (
     <>
@@ -27,7 +28,7 @@ export function CityHubTemplate({
             <Link href="/">Home</Link> / Tree Service in {city.name}
           </p>
           <h1>Tree Service in {city.name}</h1>
-          <p className="lead">{content.intro}</p>
+          <MarkdownBlock className="lead" markdown={content.intro} />
           <div className="hero__actions">
             <Link href="/contact" className="btn btn-orange">
               Get a Free Estimate
@@ -36,6 +37,12 @@ export function CityHubTemplate({
               📞 Call (470) 403-0215
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="section section--cream">
+        <div className="container" style={{ maxWidth: 860, margin: "0 auto" }}>
+          <MarkdownBlock markdown={content.overview} />
         </div>
       </section>
 

@@ -211,7 +211,8 @@ img{ max-width:100%; display:block; }
   z-index:-1;
 }
 .hero__content{ max-width: 680px; }
-.hero__content p.lead{ color: rgba(255,255,255,.92); font-size: 1.1rem; }
+.hero__content .lead{ color: rgba(255,255,255,.92); font-size: 1.1rem; }
+.hero__content .lead a{ color: #fff; text-decoration: underline; }
 .hero__actions{ display:flex; gap:16px; flex-wrap:wrap; margin-top: 28px; }
 .hero__breadcrumb{ color: rgba(255,255,255,.75); font-size:.85rem; margin-bottom: 18px; }
 .hero__breadcrumb a{ color: rgba(255,255,255,.75); }

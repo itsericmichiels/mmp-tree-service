@@ -6,6 +6,7 @@ import { citySlug } from "@/lib/slugs";
 import type { ServicePageContent } from "@/content/types";
 import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
+import { MarkdownBlock } from "./MarkdownBlock";
 
 export function ServiceCityTemplate({
   city,
@@ -31,7 +32,7 @@ export function ServiceCityTemplate({
             <Link href={`/${citySlug(city)}`}>{city.name}</Link> / {service.name}
           </p>
           <h1>{service.name} in {city.name}</h1>
-          <p className="lead">{content.intro}</p>
+          <MarkdownBlock className="lead" markdown={content.intro} />
           <div className="hero__actions">
             <Link href="/contact" className="btn btn-orange">
               Get a Free Estimate
@@ -47,11 +48,11 @@ export function ServiceCityTemplate({
         <div className="container split">
           <div>
             <h2>{content.howItWorks.title}</h2>
-            <p>{content.howItWorks.body}</p>
+            <MarkdownBlock markdown={content.howItWorks.body} />
             <h2>{content.cost.title}</h2>
-            <p>{content.cost.body}</p>
+            <MarkdownBlock markdown={content.cost.body} />
             <h2>{content.localConsiderations.title}</h2>
-            <p>{content.localConsiderations.body}</p>
+            <MarkdownBlock markdown={content.localConsiderations.body} />
           </div>
           <MapEmbed />
         </div>
@@ -66,7 +67,7 @@ export function ServiceCityTemplate({
           {content.faqs.map((faq) => (
             <div className="faq-item" key={faq.question}>
               <h4>{faq.question}</h4>
-              <p>{faq.answer}</p>
+              <MarkdownBlock markdown={faq.answer} />
             </div>
           ))}
         </div>

@@ -11,6 +11,6 @@ export type ServicePageContent = {
 };
 
 export type CityContent = {
-  hub: { intro: string; whyUs: string[] };
+  hub: { intro: string; overview: string; whyUs: string[] };
   services: Record<string, ServicePageContent>;
 };
