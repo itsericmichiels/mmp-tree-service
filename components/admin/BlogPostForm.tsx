@@ -31,6 +31,7 @@ export function BlogPostForm({
 
   return (
     <form action={action} className="estimate-panel">
+      <input type="hidden" name="mode" value={initialPost ? "edit" : "create"} />
       <div className="form-field">
         <label htmlFor="title">Title</label>
         <input
