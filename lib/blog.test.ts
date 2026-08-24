@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { getAllPosts, getPostBySlug, savePost } from "./blog";
+import { getAllPosts, getPostBySlug, savePost, uniqueSlug } from "./blog";
+import type { BlogPost } from "./blog";
 
 const fixturesDir = path.join(os.tmpdir(), "mmp-blog-test-fixtures");
 
@@ -102,5 +103,149 @@ describe("savePost", () => {
       freshDir
     );
     expect(getPostBySlug("first-post", freshDir)?.title).toBe("First Post");
+  });
+
+  it("rejects a path-traversal slug instead of writing outside the posts directory", () => {
+    const maliciousPost: BlogPost = {
+      slug: "../../../../tmp/pwned-blog-test",
+      title: "Malicious",
+      date: "2026-08-24",
+      excerpt: "x",
+      coverImage: "x",
+      seoTitle: "x",
+      seoDescription: "x",
+      bodyMarkdown: "x",
+    };
+    expect(() => savePost(maliciousPost, fixturesDir)).toThrow(/Invalid post slug/);
+    expect(fs.existsSync("/tmp/pwned-blog-test.md")).toBe(false);
+  });
+
+  it("rejects an empty slug", () => {
+    const emptySlugPost: BlogPost = {
+      slug: "",
+      title: "Empty Slug",
+      date: "2026-08-24",
+      excerpt: "x",
+      coverImage: "x",
+      seoTitle: "x",
+      seoDescription: "x",
+      bodyMarkdown: "x",
+    };
+    expect(() => savePost(emptySlugPost, fixturesDir)).toThrow(/Invalid post slug/);
+  });
+});
+
+describe("getPostBySlug slug validation", () => {
+  it("returns null for a path-traversal slug instead of reading outside the posts directory", () => {
+    expect(getPostBySlug("../../../../etc/passwd", fixturesDir)).toBeNull();
+  });
+
+  it("returns null for an empty slug", () => {
+    expect(getPostBySlug("", fixturesDir)).toBeNull();
+  });
+});
+
+describe("uniqueSlug / create-mode collision handling", () => {
+  it("returns the desired slug unchanged when there is no collision", () => {
+    expect(uniqueSlug("no-collision-slug", fixturesDir)).toBe("no-collision-slug");
+  });
+
+  it("appends a numeric suffix when the desired slug already exists", () => {
+    savePost(
+      {
+        slug: "duplicate-title",
+        title: "Duplicate Title",
+        date: "2026-08-24",
+        excerpt: "Original.",
+        coverImage: "https://example.com/e.jpg",
+        seoTitle: "Duplicate SEO",
+        seoDescription: "SEO desc",
+        bodyMarkdown: "Original body.",
+      },
+      fixturesDir
+    );
+
+    const deduped = uniqueSlug("duplicate-title", fixturesDir);
+    expect(deduped).toBe("duplicate-title-2");
+
+    // Simulate what savePostAction does on a create-mode collision: save
+    // under the de-duplicated slug rather than overwriting the original.
+    savePost(
+      {
+        slug: deduped,
+        title: "Duplicate Title (second)",
+        date: "2026-08-24",
+        excerpt: "Second.",
+        coverImage: "https://example.com/f.jpg",
+        seoTitle: "Duplicate SEO 2",
+        seoDescription: "SEO desc",
+        bodyMarkdown: "Second body.",
+      },
+      fixturesDir
+    );
+
+    // The original post must be untouched, and the new one lives at a
+    // distinct slug rather than silently overwriting it.
+    expect(getPostBySlug("duplicate-title", fixturesDir)?.title).toBe("Duplicate Title");
+    expect(getPostBySlug("duplicate-title-2", fixturesDir)?.title).toBe(
+      "Duplicate Title (second)"
+    );
+  });
+});
+
+describe("frontmatter validation at the fs boundary", () => {
+  it("coerces a Date-typed date field to a string instead of throwing", () => {
+    fs.writeFileSync(
+      path.join(fixturesDir, "unquoted-date-post.md"),
+      `---
+title: Unquoted Date Post
+date: 2026-08-24
+excerpt: An excerpt.
+coverImage: https://example.com/g.jpg
+seoTitle: Unquoted Date SEO
+seoDescription: SEO desc
+---
+
+Body of the post.
+`
+    );
+
+    const post = getPostBySlug("unquoted-date-post", fixturesDir);
+    expect(post).not.toBeNull();
+    expect(typeof post?.date).toBe("string");
+  });
+
+  it("getAllPosts skips a malformed post file and still returns the valid ones", () => {
+    const malformedDir = path.join(fixturesDir, "malformed-fixtures");
+    fs.mkdirSync(malformedDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(malformedDir, "valid-post.md"),
+      `---
+title: "Valid Post"
+date: "2026-08-24"
+excerpt: "Valid."
+coverImage: "https://example.com/h.jpg"
+seoTitle: "Valid SEO"
+seoDescription: "SEO desc"
+---
+
+Valid body.
+`
+    );
+    // Unterminated/invalid YAML frontmatter delimiter causes gray-matter to
+    // throw when parsing this file.
+    fs.writeFileSync(
+      path.join(malformedDir, "broken-post.md"),
+      `---
+title: "Broken Post
+date: "2026-08-24"
+---
+
+Broken body.
+`
+    );
+
+    const posts = getAllPosts(malformedDir);
+    expect(posts.map((p) => p.slug)).toEqual(["valid-post"]);
   });
 });
