@@ -32,8 +32,8 @@ describe("resolveSlug", () => {
   });
 
   it("returns null for an un-built city", () => {
-    expect(resolveSlug("tree-service-marietta-ga")).toBeNull();
-    expect(resolveSlug("tree-removal-marietta-ga")).toBeNull();
+    expect(resolveSlug("tree-service-roswell-ga")).toBeNull();
+    expect(resolveSlug("tree-removal-roswell-ga")).toBeNull();
   });
 
   it("returns null for garbage input", () => {
@@ -42,16 +42,18 @@ describe("resolveSlug", () => {
 });
 
 describe("builtSlugs", () => {
-  it("returns exactly Canton's hub + 5 service slugs", () => {
-    expect(builtSlugs().sort()).toEqual(
-      [
-        "tree-service-canton-ga",
-        "tree-removal-canton-ga",
-        "tree-trimming-canton-ga",
-        "stump-grinding-canton-ga",
-        "lot-clearing-canton-ga",
-        "emergency-tree-service-canton-ga",
-      ].sort()
-    );
+  it("returns exactly one hub slug + one service slug per built city per service", () => {
+    const builtCities = CITIES.filter((c) => c.isBuilt);
+    const expected = builtCities.flatMap((city) => [
+      citySlug(city),
+      ...SERVICES.map((service) => serviceCitySlug(service, city)),
+    ]);
+    expect(builtSlugs().sort()).toEqual(expected.sort());
+    expect(builtSlugs()).toHaveLength(builtCities.length * (SERVICES.length + 1));
+  });
+
+  it("includes Canton's hub and service slugs", () => {
+    expect(builtSlugs()).toContain("tree-service-canton-ga");
+    expect(builtSlugs()).toContain("tree-removal-canton-ga");
   });
 });

@@ -11,8 +11,8 @@ describe("CITIES", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("only Canton is built", () => {
-    const built = CITIES.filter((c) => c.isBuilt).map((c) => c.slug);
-    expect(built).toEqual(["canton"]);
+  it("has exactly the built cities that have real content", () => {
+    const built = CITIES.filter((c) => c.isBuilt).map((c) => c.slug).sort();
+    expect(built).toEqual(["alpharetta", "canton", "marietta", "woodstock"]);
   });
 });

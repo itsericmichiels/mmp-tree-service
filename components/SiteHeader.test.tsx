@@ -1,6 +1,6 @@
 // components/SiteHeader.test.tsx
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { SiteHeader } from "./SiteHeader";
 
 describe("SiteHeader", () => {
@@ -12,30 +12,45 @@ describe("SiteHeader", () => {
 
   it("renders Canton's 5 services as flyout links", () => {
     render(<SiteHeader />);
-    // "Tree Removal" and "Emergency Tree Service" each appear twice by
-    // design: once in the top-level Services dropdown (which points at
-    // Canton by default) and once in the Service Area > Canton flyout.
-    // Both instances must point at the same, correct URL.
-    const removalLinks = screen.getAllByRole("link", { name: /tree removal/i });
-    expect(removalLinks.length).toBeGreaterThanOrEqual(1);
-    for (const link of removalLinks) {
-      expect(link).toHaveAttribute("href", "/tree-removal-canton-ga");
-    }
-    const emergencyLinks = screen.getAllByRole("link", {
-      name: /emergency tree service/i,
-    });
-    expect(emergencyLinks.length).toBeGreaterThanOrEqual(1);
-    for (const link of emergencyLinks) {
-      expect(link).toHaveAttribute("href", "/emergency-tree-service-canton-ga");
-    }
+    // The top-level "Services" dropdown always points at Canton by design
+    // (it's not city-scoped), regardless of how many other cities are built.
+    const servicesPanel = document.getElementById("nav-services-panel")!;
+    expect(
+      within(servicesPanel).getByRole("link", { name: /tree removal/i })
+    ).toHaveAttribute("href", "/tree-removal-canton-ga");
+    expect(
+      within(servicesPanel).getByRole("link", { name: /emergency tree service/i })
+    ).toHaveAttribute("href", "/emergency-tree-service-canton-ga");
+
+    // Canton's own flyout under Service Area > Canton must also point at
+    // Canton's URLs — scoped to Canton's wrapper specifically, since other
+    // built cities (Marietta, Woodstock, Alpharetta) render their own
+    // "Tree Removal" flyout links pointing at their own URLs.
+    const cantonLink = screen.getByRole("link", { name: /^canton, ga$/i });
+    const cantonWrapper = cantonLink.closest(".dropdown__row-wrapper") as HTMLElement;
+    expect(
+      within(cantonWrapper).getByRole("link", { name: /tree removal/i })
+    ).toHaveAttribute("href", "/tree-removal-canton-ga");
+    expect(
+      within(cantonWrapper).getByRole("link", { name: /emergency tree service/i })
+    ).toHaveAttribute("href", "/emergency-tree-service-canton-ga");
+  });
+
+  it("renders the other built cities as their own flyout links, not Canton's", () => {
+    render(<SiteHeader />);
+    const mariettaLink = screen.getByRole("link", { name: /^marietta, ga$/i });
+    const mariettaWrapper = mariettaLink.closest(".dropdown__row-wrapper") as HTMLElement;
+    expect(
+      within(mariettaWrapper).getByRole("link", { name: /tree removal/i })
+    ).toHaveAttribute("href", "/tree-removal-marietta-ga");
   });
 
   it("renders un-built cities as non-clickable text, not links", () => {
     render(<SiteHeader />);
     expect(
-      screen.queryByRole("link", { name: /^marietta, ga$/i })
+      screen.queryByRole("link", { name: /^roswell, ga$/i })
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/marietta, ga/i)).toBeInTheDocument();
+    expect(screen.getByText(/roswell, ga/i)).toBeInTheDocument();
   });
 
   it("renders the always-visible phone number and CTA", () => {

@@ -6,7 +6,13 @@
 // city's copy.
 import type { CityContent } from "./types";
 import { CANTON_CONTENT } from "./canton";
+import { MARIETTA_CONTENT } from "./marietta";
+import { WOODSTOCK_CONTENT } from "./woodstock";
+import { ALPHARETTA_CONTENT } from "./alpharetta";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
+  marietta: MARIETTA_CONTENT,
+  woodstock: WOODSTOCK_CONTENT,
+  alpharetta: ALPHARETTA_CONTENT,
 };
