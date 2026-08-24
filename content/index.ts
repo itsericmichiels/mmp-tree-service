@@ -12,6 +12,9 @@ import { ALPHARETTA_CONTENT } from "./alpharetta";
 import { ROSWELL_CONTENT } from "./roswell";
 import { SANDY_SPRINGS_CONTENT } from "./sandy-springs";
 import { KENNESAW_CONTENT } from "./kennesaw";
+import { DUNWOODY_CONTENT } from "./dunwoody";
+import { SMYRNA_CONTENT } from "./smyrna";
+import { MILTON_CONTENT } from "./milton";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -21,4 +24,7 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   roswell: ROSWELL_CONTENT,
   "sandy-springs": SANDY_SPRINGS_CONTENT,
   kennesaw: KENNESAW_CONTENT,
+  dunwoody: DUNWOODY_CONTENT,
+  smyrna: SMYRNA_CONTENT,
+  milton: MILTON_CONTENT,
 };

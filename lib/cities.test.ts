@@ -16,10 +16,13 @@ describe("CITIES", () => {
     expect(built).toEqual([
       "alpharetta",
       "canton",
+      "dunwoody",
       "kennesaw",
       "marietta",
+      "milton",
       "roswell",
       "sandy-springs",
+      "smyrna",
       "woodstock",
     ]);
   });
