@@ -55,6 +55,9 @@ const BUILT_CITY_NAMES = new Set([
   "Vinings",
   "Atlanta",
   "Avondale Estates",
+  "Buford",
+  "Suwanee",
+  "Johns Creek",
 ]);
 
 export const CITIES: City[] = CITY_NAMES.map((name) => ({

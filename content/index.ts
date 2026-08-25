@@ -21,6 +21,9 @@ import { DULUTH_CONTENT } from "./duluth";
 import { VININGS_CONTENT } from "./vinings";
 import { ATLANTA_CONTENT } from "./atlanta";
 import { AVONDALE_ESTATES_CONTENT } from "./avondale-estates";
+import { BUFORD_CONTENT } from "./buford";
+import { SUWANEE_CONTENT } from "./suwanee";
+import { JOHNS_CREEK_CONTENT } from "./johns-creek";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -39,4 +42,7 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   vinings: VININGS_CONTENT,
   atlanta: ATLANTA_CONTENT,
   "avondale-estates": AVONDALE_ESTATES_CONTENT,
+  buford: BUFORD_CONTENT,
+  suwanee: SUWANEE_CONTENT,
+  "johns-creek": JOHNS_CREEK_CONTENT,
 };
