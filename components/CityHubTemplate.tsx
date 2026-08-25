@@ -7,20 +7,24 @@ import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
 import { MarkdownBlock } from "./MarkdownBlock";
 
+const DEFAULT_HUB_HERO_URL =
+  "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1800&q=80";
+
 export function CityHubTemplate({
   city,
   content,
+  heroImageUrl,
 }: {
   city: City;
   content: { intro: string; overview: string; whyUs: string[] };
+  heroImageUrl?: string;
 }) {
   return (
     <>
       <section
         className="hero"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1800&q=80')",
+          backgroundImage: `url('${heroImageUrl || DEFAULT_HUB_HERO_URL}')`,
         }}
       >
         <div className="container hero__content">

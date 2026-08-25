@@ -5,6 +5,7 @@ import { resolveSlug, builtSlugs } from "@/lib/slugs";
 import { CITY_CONTENT } from "@/content";
 import { CityHubTemplate } from "@/components/CityHubTemplate";
 import { ServiceCityTemplate } from "@/components/ServiceCityTemplate";
+import { getHeroImageUrl } from "@/lib/hero-images";
 
 const DEFAULT_METADATA: Metadata = {
   title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
@@ -77,8 +78,12 @@ export default async function CityOrServicePage({
     notFound();
   }
 
+  const heroImageUrl = getHeroImageUrl(slug) ?? undefined;
+
   if (resolved.type === "hub") {
-    return <CityHubTemplate city={resolved.city} content={content.hub} />;
+    return (
+      <CityHubTemplate city={resolved.city} content={content.hub} heroImageUrl={heroImageUrl} />
+    );
   }
 
   return (
@@ -86,6 +91,7 @@ export default async function CityOrServicePage({
       city={resolved.city}
       service={resolved.service}
       content={content.services[resolved.service.slug]}
+      heroImageUrl={heroImageUrl}
     />
   );
 }

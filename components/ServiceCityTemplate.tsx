@@ -8,22 +8,26 @@ import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
 import { MarkdownBlock } from "./MarkdownBlock";
 
+const DEFAULT_SERVICE_HERO_URL =
+  "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1800&q=80";
+
 export function ServiceCityTemplate({
   city,
   service,
   content,
+  heroImageUrl,
 }: {
   city: City;
   service: Service;
   content: ServicePageContent;
+  heroImageUrl?: string;
 }) {
   return (
     <>
       <section
         className="hero"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1800&q=80')",
+          backgroundImage: `url('${heroImageUrl || DEFAULT_SERVICE_HERO_URL}')`,
         }}
       >
         <div className="container hero__content">
