@@ -30,6 +30,8 @@ import { CUMMING_CONTENT } from "./cumming";
 import { DECATUR_CONTENT } from "./decatur";
 import { LAWRENCEVILLE_CONTENT } from "./lawrenceville";
 import { BROOKHAVEN_CONTENT } from "./brookhaven";
+import { ACWORTH_CONTENT } from "./acworth";
+import { POWDER_SPRINGS_CONTENT } from "./powder-springs";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -57,4 +59,6 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   decatur: DECATUR_CONTENT,
   lawrenceville: LAWRENCEVILLE_CONTENT,
   brookhaven: BROOKHAVEN_CONTENT,
+  acworth: ACWORTH_CONTENT,
+  "powder-springs": POWDER_SPRINGS_CONTENT,
 };

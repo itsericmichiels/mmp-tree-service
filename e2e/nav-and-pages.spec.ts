@@ -37,16 +37,11 @@ test("a Canton service page renders FAQs and the map embed", async ({ page }) =>
   await expect(page.locator(".map-embed iframe")).toBeVisible();
 });
 
-test("service area index lists 27 cities, only built cities linked", async ({ page }) => {
+test("service area index lists all 27 cities as built, linked pages", async ({ page }) => {
   await page.goto("/service-areas");
   await expect(page.locator(".area-chip")).toHaveCount(27);
-  // Built cities as of this test: Canton, Marietta, Woodstock, Alpharetta,
-  // Roswell, Sandy Springs, Kennesaw, Dunwoody, Smyrna, Milton, Norcross,
-  // Lilburn, Duluth, Vinings, Atlanta, Avondale Estates, Buford, Suwanee,
-  // Johns Creek, East Point, Buckhead, Cumming, Decatur, Lawrenceville,
-  // Brookhaven. Update this count (and lib/cities.test.ts's matching
-  // assertion) when a new city's isBuilt flag flips to true.
-  await expect(page.locator("a.area-chip")).toHaveCount(25);
+  // All 27 cities in the service-area list are now built out and linked.
+  await expect(page.locator("a.area-chip")).toHaveCount(27);
 });
 
 test("nav mega-menu reaches a Canton service page", async ({ page }) => {

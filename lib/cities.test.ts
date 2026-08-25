@@ -14,6 +14,7 @@ describe("CITIES", () => {
   it("has exactly the built cities that have real content", () => {
     const built = CITIES.filter((c) => c.isBuilt).map((c) => c.slug).sort();
     expect(built).toEqual([
+      "acworth",
       "alpharetta",
       "atlanta",
       "avondale-estates",
@@ -33,6 +34,7 @@ describe("CITIES", () => {
       "marietta",
       "milton",
       "norcross",
+      "powder-springs",
       "roswell",
       "sandy-springs",
       "smyrna",
@@ -40,5 +42,13 @@ describe("CITIES", () => {
       "vinings",
       "woodstock",
     ]);
+  });
+
+  it("all 27 cities are now built out", () => {
+    // The service-area list is complete: every city has a real content
+    // registry entry. If a 28th city is ever added to CITY_NAMES, it should
+    // start with isBuilt: false until its content exists, which will make
+    // this test fail as a reminder to update it deliberately.
+    expect(CITIES.every((c) => c.isBuilt)).toBe(true);
   });
 });

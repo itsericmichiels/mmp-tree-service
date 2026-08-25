@@ -31,9 +31,11 @@ describe("resolveSlug", () => {
     expect(resolved).toEqual({ type: "service", service: treeRemoval, city: canton });
   });
 
-  it("returns null for an un-built city", () => {
-    expect(resolveSlug("tree-service-acworth-ga")).toBeNull();
-    expect(resolveSlug("tree-removal-acworth-ga")).toBeNull();
+  it("returns null for a city not in the service area list", () => {
+    // All 27 real cities are built out now, so this uses a well-formed but
+    // fictional city slug rather than a real, currently-unbuilt one.
+    expect(resolveSlug("tree-service-hometown-ga")).toBeNull();
+    expect(resolveSlug("tree-removal-hometown-ga")).toBeNull();
   });
 
   it("returns null for garbage input", () => {
