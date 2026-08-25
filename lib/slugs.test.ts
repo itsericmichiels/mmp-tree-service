@@ -32,8 +32,8 @@ describe("resolveSlug", () => {
   });
 
   it("returns null for an un-built city", () => {
-    expect(resolveSlug("tree-service-decatur-ga")).toBeNull();
-    expect(resolveSlug("tree-removal-decatur-ga")).toBeNull();
+    expect(resolveSlug("tree-service-acworth-ga")).toBeNull();
+    expect(resolveSlug("tree-removal-acworth-ga")).toBeNull();
   });
 
   it("returns null for garbage input", () => {

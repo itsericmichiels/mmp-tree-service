@@ -61,6 +61,9 @@ const BUILT_CITY_NAMES = new Set([
   "East Point",
   "Buckhead",
   "Cumming",
+  "Decatur",
+  "Lawrenceville",
+  "Brookhaven",
 ]);
 
 export const CITIES: City[] = CITY_NAMES.map((name) => ({

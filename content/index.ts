@@ -27,6 +27,9 @@ import { JOHNS_CREEK_CONTENT } from "./johns-creek";
 import { EAST_POINT_CONTENT } from "./east-point";
 import { BUCKHEAD_CONTENT } from "./buckhead";
 import { CUMMING_CONTENT } from "./cumming";
+import { DECATUR_CONTENT } from "./decatur";
+import { LAWRENCEVILLE_CONTENT } from "./lawrenceville";
+import { BROOKHAVEN_CONTENT } from "./brookhaven";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -51,4 +54,7 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   "east-point": EAST_POINT_CONTENT,
   buckhead: BUCKHEAD_CONTENT,
   cumming: CUMMING_CONTENT,
+  decatur: DECATUR_CONTENT,
+  lawrenceville: LAWRENCEVILLE_CONTENT,
+  brookhaven: BROOKHAVEN_CONTENT,
 };
