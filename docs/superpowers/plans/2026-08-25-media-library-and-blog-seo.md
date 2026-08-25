@@ -2759,7 +2759,14 @@ export default async function BlogPostPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // JSON.stringify does not escape "<", so a post title/field
+        // containing a literal "</script>" would otherwise close this tag
+        // early and let anything after it run as a new, real <script> — the
+        // blog admin is unauthenticated by design, so this field is
+        // attacker-reachable. Escaping "<" to its unicode escape defeats
+        // the HTML-parser-level breakout while staying valid, parseable
+        // JSON for search engines' structured-data readers.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <section className="section">
         <div className="container" style={{ maxWidth: 760 }}>
