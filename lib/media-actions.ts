@@ -2,6 +2,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { saveMediaFile, deleteMedia, toggleMediaTag } from "@/lib/media";
 import { assignHero, clearHero } from "@/lib/hero-images";
 
@@ -37,12 +38,18 @@ export async function toggleOurWorkAction(formData: FormData): Promise<void> {
 export async function assignHeroAction(formData: FormData): Promise<void> {
   const mediaId = String(formData.get("mediaId") ?? "");
   const slug = String(formData.get("slug") ?? "");
-  if (slug && mediaId) assignHero(slug, mediaId);
+  if (slug && mediaId) {
+    assignHero(slug, mediaId);
+    revalidatePath(`/${slug}`);
+  }
   redirect("/admin/media");
 }
 
 export async function clearHeroAction(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
-  if (slug) clearHero(slug);
+  if (slug) {
+    clearHero(slug);
+    revalidatePath(`/${slug}`);
+  }
   redirect("/admin/media");
 }
