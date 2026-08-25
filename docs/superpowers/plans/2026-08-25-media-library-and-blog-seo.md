@@ -1287,7 +1287,7 @@ export default function OurWorkPage() {
     <section className="section">
       <div className="container section-head">
         <span className="eyebrow">Our Work</span>
-        <h1>Recent Jobs Around North Metro Atlanta</h1>
+        <h1>{gallery.length === 0 ? "Coming Soon" : "Recent Jobs Around North Metro Atlanta"}</h1>
       </div>
       <div className="container">
         {gallery.length === 0 ? (
