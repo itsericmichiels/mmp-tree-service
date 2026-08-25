@@ -147,14 +147,18 @@ test.describe("media library admin", () => {
       // Clear the assignment and delete the media so the fixture doesn't
       // leak into later test runs against the same dev server.
       await page.goto("/admin/media");
-      await page
-        .locator(".card", { hasText: "E2E hero test photo" })
-        .getByRole("button", { name: "Clear Hero" })
-        .click();
-      await page
-        .locator(".card", { hasText: "E2E hero test photo" })
-        .getByRole("button", { name: "Delete" })
-        .click();
+      const cleanupCard = page.locator(".card", { hasText: "E2E hero test photo" });
+      await cleanupCard.getByRole("button", { name: "Clear Hero" }).click();
+
+      // Same race class as Fix A above: the Clear Hero Server Action's
+      // redirect() target is the page we're already on, so clicking
+      // straight into Delete without waiting risks racing the in-flight
+      // client-side refresh. Wait for a concrete DOM signal that the
+      // mutation actually landed (the "Currently hero for: ..." block
+      // disappearing from this card) before clicking Delete.
+      await expect(cleanupCard.getByText(/Currently hero for:/)).not.toBeVisible();
+
+      await cleanupCard.getByRole("button", { name: "Delete" }).click();
     } finally {
       // Safety net: if an assertion above failed before the admin-UI
       // clear/delete ran, this scrubs the real content/media/media.json,
