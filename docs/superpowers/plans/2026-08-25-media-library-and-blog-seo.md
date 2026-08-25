@@ -1326,6 +1326,56 @@ git commit -m "Render live Our Work gallery from media tagged our-work"
 
 ---
 
+### Addendum (found during Task 7): hero assignment needs on-demand revalidation
+
+**Discovered by:** Task 7's e2e work, which runs against a real production build (`npm run build && npm run start`, per `playwright.config.ts`'s `webServer.command`) — not `next dev`.
+
+**The gap:** `app/[slug]/page.tsx` uses `generateStaticParams()` with no `dynamic` export, so all 162 city/service pages are fully static (SSG) — rendered once at build time. `assignHero`/`clearHero` (Task 2) write `content/media/hero-assignments.json` at runtime, but nothing tells Next.js to regenerate the affected static page afterward, so an assigned hero image would never appear in production without a full rebuild — defeating the entire point of a self-service admin control.
+
+**Ruling:** Do not make the route `force-dynamic` — that would turn all 162 statically-generated pages dynamic just to fix one admin action, sacrificing the static-generation performance/SEO benefit this whole city-build-out project was built for. Instead, use Next.js's on-demand revalidation (`revalidatePath`) so only the one specific page whose hero just changed gets regenerated, while the other 161+ pages stay untouched and fully static.
+
+**Files:**
+- Modify: `lib/media-actions.ts` (retroactively amends Task 3's file)
+
+Add the import and two calls:
+
+```ts
+// lib/media-actions.ts
+"use server";
+
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { saveMediaFile, deleteMedia, toggleMediaTag } from "@/lib/media";
+import { assignHero, clearHero } from "@/lib/hero-images";
+```
+
+```ts
+export async function assignHeroAction(formData: FormData): Promise<void> {
+  const mediaId = String(formData.get("mediaId") ?? "");
+  const slug = String(formData.get("slug") ?? "");
+  if (slug && mediaId) {
+    assignHero(slug, mediaId);
+    revalidatePath(`/${slug}`);
+  }
+  redirect("/admin/media");
+}
+
+export async function clearHeroAction(formData: FormData): Promise<void> {
+  const slug = String(formData.get("slug") ?? "");
+  if (slug) {
+    clearHero(slug);
+    revalidatePath(`/${slug}`);
+  }
+  redirect("/admin/media");
+}
+```
+
+`uploadMediaAction`, `deleteMediaAction`, and `toggleOurWorkAction` do not need `revalidatePath` — they only affect `/admin/media` and `/our-work`, both of which already declare `export const dynamic = "force-dynamic"` and re-read the filesystem on every request.
+
+This fix is applied and verified as part of Task 7 (below), since Task 7's e2e test is what depends on it actually working in production.
+
+---
+
 ### Task 7: e2e coverage for the media library
 
 **Files:**
