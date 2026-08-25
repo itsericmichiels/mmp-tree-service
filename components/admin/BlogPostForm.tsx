@@ -10,10 +10,12 @@ export function BlogPostForm({
   action,
   initialPost,
   slugEditable,
+  categories,
 }: {
   action: (formData: FormData) => void | Promise<void>;
   initialPost?: BlogPost;
   slugEditable: boolean;
+  categories: string[];
 }) {
   const [title, setTitle] = useState(initialPost?.title ?? "");
   const [slug, setSlug] = useState(initialPost?.slug ?? "");
@@ -79,6 +81,50 @@ export function BlogPostForm({
             required
           />
         </div>
+      </div>
+      <div className="form-row">
+        <div className="form-field">
+          <label htmlFor="coverImageAlt">Cover Image Alt Text</label>
+          <input
+            id="coverImageAlt"
+            name="coverImageAlt"
+            type="text"
+            defaultValue={initialPost?.coverImageAlt ?? ""}
+            required
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor="category">Category</label>
+          <input
+            id="category"
+            name="category"
+            type="text"
+            list="category-options"
+            defaultValue={initialPost?.category ?? ""}
+            required
+          />
+          <datalist id="category-options">
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </datalist>
+          <p className="form-note">
+            Pick an existing category or type a new one — it'll be added to the list.
+          </p>
+        </div>
+      </div>
+      <div className="form-field">
+        <label htmlFor="tags">Tags</label>
+        <input
+          id="tags"
+          name="tags"
+          type="text"
+          defaultValue={initialPost?.tags.join(", ") ?? ""}
+          placeholder="oak, pruning, canton"
+        />
+        <p className="form-note">Comma-separated, optional.</p>
       </div>
       <div className="form-field">
         <label htmlFor="excerpt">Excerpt</label>

@@ -1,5 +1,6 @@
 import { BlogPostForm } from "@/components/admin/BlogPostForm";
 import { savePostAction } from "@/lib/blog-actions";
+import { getCategories } from "@/lib/blog-categories";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export default function NewBlogPostPage() {
     <section className="section">
       <div className="container" style={{ maxWidth: 760 }}>
         <h1>New Blog Post</h1>
-        <BlogPostForm action={savePostAction} slugEditable={true} />
+        <BlogPostForm action={savePostAction} slugEditable={true} categories={getCategories()} />
       </div>
     </section>
   );
