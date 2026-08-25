@@ -111,7 +111,7 @@ export function BlogPostForm({
             ))}
           </datalist>
           <p className="form-note">
-            Pick an existing category or type a new one — it'll be added to the list.
+            Pick an existing category or type a new one — it&apos;ll be added to the list.
           </p>
         </div>
       </div>

@@ -14,7 +14,7 @@ export function MediaUploadForm({
         <label htmlFor="alt">Alt Text</label>
         <input id="alt" name="alt" type="text" required />
         <p className="form-note">
-          Describe what's in the photo — used for accessibility and image SEO.
+          Describe what&apos;s in the photo — used for accessibility and image SEO.
         </p>
       </div>
       <div className="form-field">

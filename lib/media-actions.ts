@@ -4,7 +4,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { saveMediaFile, deleteMedia, toggleMediaTag } from "@/lib/media";
-import { assignHero, clearHero } from "@/lib/hero-images";
+import { assignHero, clearHero, getAllHeroAssignments } from "@/lib/hero-images";
 
 export async function uploadMediaAction(formData: FormData): Promise<void> {
   const file = formData.get("file");
@@ -15,17 +15,32 @@ export async function uploadMediaAction(formData: FormData): Promise<void> {
     .filter(Boolean);
 
   if (!(file instanceof File) || file.size === 0) {
-    throw new Error("No file uploaded");
+    redirect("/admin/media?error=" + encodeURIComponent("No file uploaded"));
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  saveMediaFile(file.name, buffer, alt, tags);
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    saveMediaFile(file.name, buffer, alt, tags);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Upload failed";
+    redirect("/admin/media?error=" + encodeURIComponent(message));
+  }
+
   redirect("/admin/media");
 }
 
 export async function deleteMediaAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
-  if (id) deleteMedia(id);
+  if (id) {
+    const assignments = getAllHeroAssignments();
+    for (const [slug, mediaId] of Object.entries(assignments)) {
+      if (mediaId === id) {
+        clearHero(slug);
+        revalidatePath(`/${slug}`);
+      }
+    }
+    deleteMedia(id);
+  }
   redirect("/admin/media");
 }
 

@@ -18,7 +18,12 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminMediaPage() {
+export default async function AdminMediaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   const media = getAllMedia();
   const assignments = getAllHeroAssignments();
   const pageSlugs = builtSlugs();
@@ -27,6 +32,11 @@ export default function AdminMediaPage() {
     <section className="section">
       <div className="container">
         <h1>Media Library</h1>
+        {error && (
+          <p className="form-note" style={{ color: "#c0392b", textAlign: "left" }}>
+            {decodeURIComponent(error)}
+          </p>
+        )}
         <MediaUploadForm action={uploadMediaAction} />
         {media.length === 0 ? (
           <p>No images uploaded yet.</p>

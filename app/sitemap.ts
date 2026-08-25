@@ -2,12 +2,9 @@
 import type { MetadataRoute } from "next";
 import { builtSlugs } from "@/lib/slugs";
 import { getAllPosts } from "@/lib/blog";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
-
-// Placeholder base URL — update once the site has a real production
-// domain (this project is intended to eventually replace mmptreeservice.com).
-const BASE_URL = "https://mmptreeservice.com";
 
 const STATIC_PATHS = [
   "/",
@@ -24,6 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [...STATIC_PATHS, ...builtSlugs().map((slug) => `/${slug}`), ...blogPaths];
 
   return paths.map((path) => ({
-    url: `${BASE_URL}${path === "/" ? "" : path}`,
+    url: `${SITE_URL}${path === "/" ? "" : path}`,
   }));
 }

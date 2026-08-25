@@ -20,6 +20,10 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Content & Media Persistence
+
+This project uses a file-based CMS instead of a database: uploaded media lives in `public/uploads/` with metadata in `content/media/*.json`, and blog posts live as files in `content/blog/`. Because there is no database, git is this project's persistence layer for deployment — any media or blog changes made through the admin pages must be committed (and pushed) to git, or they will be lost on the next deploy/rebuild.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

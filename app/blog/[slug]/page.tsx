@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug } from "@/lib/blog";
 import { renderMarkdownToHtml } from "@/lib/markdown";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -50,11 +51,11 @@ export default async function BlogPostPage({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
-    image: [post.coverImage],
+    image: [absoluteUrl(post.coverImage)],
     datePublished: post.date,
     author: { "@type": "Organization", name: "MMP Tree Service LLC" },
     publisher: { "@type": "Organization", name: "MMP Tree Service LLC" },
-    mainEntityOfPage: `https://mmptreeservice.com/blog/${post.slug}`,
+    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
   };
 
   return (

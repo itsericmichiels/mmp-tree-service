@@ -25,6 +25,9 @@ export function MediaGalleryItem({
       <img className="card__img" src={item.url} alt={item.alt} />
       <div className="card__body">
         <p>{item.alt}</p>
+        <p>
+          <code>{item.url}</code>
+        </p>
         <div>
           {item.tags.map((tag) => (
             <span className="tag" key={tag}>
