@@ -16,6 +16,9 @@ title: "Older Post"
 date: "2026-01-01"
 excerpt: "An older post."
 coverImage: "https://example.com/a.jpg"
+coverImageAlt: "Alt for older post"
+category: "Tree Care Tips"
+tags: ["oak", "pruning"]
 seoTitle: "Older Post SEO"
 seoDescription: "SEO desc"
 ---
@@ -30,6 +33,9 @@ title: "Newer Post"
 date: "2026-06-01"
 excerpt: "A newer post."
 coverImage: "https://example.com/b.jpg"
+coverImageAlt: "Alt for newer post"
+category: "Storm Safety"
+tags: ["storm"]
 seoTitle: "Newer Post SEO"
 seoDescription: "SEO desc"
 ---
@@ -55,20 +61,44 @@ describe("getAllPosts", () => {
 });
 
 describe("getPostBySlug", () => {
-  it("returns the matching post with parsed frontmatter and body", () => {
+  it("returns the matching post with parsed frontmatter and body, including category and tags", () => {
     const post = getPostBySlug("older-post", fixturesDir);
     expect(post?.title).toBe("Older Post");
     expect(post?.date).toBe("2026-01-01");
     expect(post?.bodyMarkdown).toBe("Body of the older post.");
+    expect(post?.category).toBe("Tree Care Tips");
+    expect(post?.tags).toEqual(["oak", "pruning"]);
+    expect(post?.coverImageAlt).toBe("Alt for older post");
   });
 
   it("returns null for a missing slug", () => {
     expect(getPostBySlug("does-not-exist", fixturesDir)).toBeNull();
   });
+
+  it("defaults category to an empty string and tags to an empty array when frontmatter omits them", () => {
+    fs.writeFileSync(
+      path.join(fixturesDir, "no-category-post.md"),
+      `---
+title: "No Category Post"
+date: "2026-07-01"
+excerpt: "No category set."
+coverImage: "https://example.com/z.jpg"
+seoTitle: "SEO"
+seoDescription: "SEO desc"
+---
+
+Body.
+`
+    );
+    const post = getPostBySlug("no-category-post", fixturesDir);
+    expect(post?.category).toBe("");
+    expect(post?.tags).toEqual([]);
+    expect(post?.coverImageAlt).toBe("");
+  });
 });
 
 describe("savePost", () => {
-  it("writes a post file that getPostBySlug can then read back", () => {
+  it("writes a post file that getPostBySlug can then read back, including category and tags", () => {
     savePost(
       {
         slug: "brand-new-post",
@@ -76,6 +106,9 @@ describe("savePost", () => {
         date: "2026-08-24",
         excerpt: "Just written.",
         coverImage: "https://example.com/c.jpg",
+        coverImageAlt: "A brand new photo",
+        category: "Company News",
+        tags: ["announcement"],
         seoTitle: "Brand New SEO",
         seoDescription: "SEO desc",
         bodyMarkdown: "This is the body.",
@@ -85,6 +118,9 @@ describe("savePost", () => {
     const post = getPostBySlug("brand-new-post", fixturesDir);
     expect(post?.title).toBe("Brand New Post");
     expect(post?.bodyMarkdown).toBe("This is the body.");
+    expect(post?.category).toBe("Company News");
+    expect(post?.tags).toEqual(["announcement"]);
+    expect(post?.coverImageAlt).toBe("A brand new photo");
   });
 
   it("creates the posts directory if it doesn't exist yet", () => {
@@ -96,6 +132,9 @@ describe("savePost", () => {
         date: "2026-08-24",
         excerpt: "The very first one.",
         coverImage: "https://example.com/d.jpg",
+        coverImageAlt: "Alt",
+        category: "Local Guides",
+        tags: [],
         seoTitle: "First Post SEO",
         seoDescription: "SEO desc",
         bodyMarkdown: "Hello world.",
@@ -112,6 +151,9 @@ describe("savePost", () => {
       date: "2026-08-24",
       excerpt: "x",
       coverImage: "x",
+      coverImageAlt: "x",
+      category: "x",
+      tags: [],
       seoTitle: "x",
       seoDescription: "x",
       bodyMarkdown: "x",
@@ -127,6 +169,9 @@ describe("savePost", () => {
       date: "2026-08-24",
       excerpt: "x",
       coverImage: "x",
+      coverImageAlt: "x",
+      category: "x",
+      tags: [],
       seoTitle: "x",
       seoDescription: "x",
       bodyMarkdown: "x",
@@ -158,6 +203,9 @@ describe("uniqueSlug / create-mode collision handling", () => {
         date: "2026-08-24",
         excerpt: "Original.",
         coverImage: "https://example.com/e.jpg",
+        coverImageAlt: "Alt",
+        category: "Tree Care Tips",
+        tags: [],
         seoTitle: "Duplicate SEO",
         seoDescription: "SEO desc",
         bodyMarkdown: "Original body.",
@@ -168,8 +216,6 @@ describe("uniqueSlug / create-mode collision handling", () => {
     const deduped = uniqueSlug("duplicate-title", fixturesDir);
     expect(deduped).toBe("duplicate-title-2");
 
-    // Simulate what savePostAction does on a create-mode collision: save
-    // under the de-duplicated slug rather than overwriting the original.
     savePost(
       {
         slug: deduped,
@@ -177,6 +223,9 @@ describe("uniqueSlug / create-mode collision handling", () => {
         date: "2026-08-24",
         excerpt: "Second.",
         coverImage: "https://example.com/f.jpg",
+        coverImageAlt: "Alt 2",
+        category: "Tree Care Tips",
+        tags: [],
         seoTitle: "Duplicate SEO 2",
         seoDescription: "SEO desc",
         bodyMarkdown: "Second body.",
@@ -184,8 +233,6 @@ describe("uniqueSlug / create-mode collision handling", () => {
       fixturesDir
     );
 
-    // The original post must be untouched, and the new one lives at a
-    // distinct slug rather than silently overwriting it.
     expect(getPostBySlug("duplicate-title", fixturesDir)?.title).toBe("Duplicate Title");
     expect(getPostBySlug("duplicate-title-2", fixturesDir)?.title).toBe(
       "Duplicate Title (second)"
@@ -232,8 +279,6 @@ seoDescription: "SEO desc"
 Valid body.
 `
     );
-    // Unterminated/invalid YAML frontmatter delimiter causes gray-matter to
-    // throw when parsing this file.
     fs.writeFileSync(
       path.join(malformedDir, "broken-post.md"),
       `---

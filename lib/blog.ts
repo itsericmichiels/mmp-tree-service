@@ -1,3 +1,4 @@
+// lib/blog.ts
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -8,6 +9,9 @@ export type BlogPost = {
   date: string;
   excerpt: string;
   coverImage: string;
+  coverImageAlt: string;
+  category: string;
+  tags: string[];
   seoTitle: string;
   seoDescription: string;
   bodyMarkdown: string;
@@ -32,6 +36,9 @@ function readPostFile(filePath: string, slug: string): BlogPost {
     date: String(data.date ?? ""),
     excerpt: String(data.excerpt ?? ""),
     coverImage: String(data.coverImage ?? ""),
+    coverImageAlt: String(data.coverImageAlt ?? ""),
+    category: String(data.category ?? ""),
+    tags: Array.isArray(data.tags) ? data.tags.map((t: unknown) => String(t)) : [],
     seoTitle: String(data.seoTitle ?? ""),
     seoDescription: String(data.seoDescription ?? ""),
     bodyMarkdown: content.trim(),
@@ -83,6 +90,9 @@ export function savePost(post: BlogPost, postsDir: string = DEFAULT_POSTS_DIR): 
     date: post.date,
     excerpt: post.excerpt,
     coverImage: post.coverImage,
+    coverImageAlt: post.coverImageAlt,
+    category: post.category,
+    tags: post.tags,
     seoTitle: post.seoTitle,
     seoDescription: post.seoDescription,
   });
