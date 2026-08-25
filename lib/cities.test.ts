@@ -15,6 +15,8 @@ describe("CITIES", () => {
     const built = CITIES.filter((c) => c.isBuilt).map((c) => c.slug).sort();
     expect(built).toEqual([
       "alpharetta",
+      "atlanta",
+      "avondale-estates",
       "canton",
       "duluth",
       "dunwoody",
@@ -26,6 +28,7 @@ describe("CITIES", () => {
       "roswell",
       "sandy-springs",
       "smyrna",
+      "vinings",
       "woodstock",
     ]);
   });

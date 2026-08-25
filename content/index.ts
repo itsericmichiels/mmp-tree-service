@@ -18,6 +18,9 @@ import { MILTON_CONTENT } from "./milton";
 import { NORCROSS_CONTENT } from "./norcross";
 import { LILBURN_CONTENT } from "./lilburn";
 import { DULUTH_CONTENT } from "./duluth";
+import { VININGS_CONTENT } from "./vinings";
+import { ATLANTA_CONTENT } from "./atlanta";
+import { AVONDALE_ESTATES_CONTENT } from "./avondale-estates";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -33,4 +36,7 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   norcross: NORCROSS_CONTENT,
   lilburn: LILBURN_CONTENT,
   duluth: DULUTH_CONTENT,
+  vinings: VININGS_CONTENT,
+  atlanta: ATLANTA_CONTENT,
+  "avondale-estates": AVONDALE_ESTATES_CONTENT,
 };
