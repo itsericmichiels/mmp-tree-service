@@ -48,9 +48,9 @@ describe("SiteHeader", () => {
   it("renders un-built cities as non-clickable text, not links", () => {
     render(<SiteHeader />);
     expect(
-      screen.queryByRole("link", { name: /^buckhead, ga$/i })
+      screen.queryByRole("link", { name: /^decatur, ga$/i })
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/buckhead, ga/i)).toBeInTheDocument();
+    expect(screen.getByText(/decatur, ga/i)).toBeInTheDocument();
   });
 
   it("renders the always-visible phone number and CTA", () => {

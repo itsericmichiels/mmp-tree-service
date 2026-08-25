@@ -43,9 +43,10 @@ test("service area index lists 27 cities, only built cities linked", async ({ pa
   // Built cities as of this test: Canton, Marietta, Woodstock, Alpharetta,
   // Roswell, Sandy Springs, Kennesaw, Dunwoody, Smyrna, Milton, Norcross,
   // Lilburn, Duluth, Vinings, Atlanta, Avondale Estates, Buford, Suwanee,
-  // Johns Creek. Update this count (and lib/cities.test.ts's matching
-  // assertion) when a new city's isBuilt flag flips to true.
-  await expect(page.locator("a.area-chip")).toHaveCount(19);
+  // Johns Creek, East Point, Buckhead, Cumming. Update this count (and
+  // lib/cities.test.ts's matching assertion) when a new city's isBuilt flag
+  // flips to true.
+  await expect(page.locator("a.area-chip")).toHaveCount(22);
 });
 
 test("nav mega-menu reaches a Canton service page", async ({ page }) => {

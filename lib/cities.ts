@@ -58,6 +58,9 @@ const BUILT_CITY_NAMES = new Set([
   "Buford",
   "Suwanee",
   "Johns Creek",
+  "East Point",
+  "Buckhead",
+  "Cumming",
 ]);
 
 export const CITIES: City[] = CITY_NAMES.map((name) => ({

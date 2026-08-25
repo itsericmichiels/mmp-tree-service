@@ -24,6 +24,9 @@ import { AVONDALE_ESTATES_CONTENT } from "./avondale-estates";
 import { BUFORD_CONTENT } from "./buford";
 import { SUWANEE_CONTENT } from "./suwanee";
 import { JOHNS_CREEK_CONTENT } from "./johns-creek";
+import { EAST_POINT_CONTENT } from "./east-point";
+import { BUCKHEAD_CONTENT } from "./buckhead";
+import { CUMMING_CONTENT } from "./cumming";
 
 export const CITY_CONTENT: Record<string, CityContent> = {
   canton: CANTON_CONTENT,
@@ -45,4 +48,7 @@ export const CITY_CONTENT: Record<string, CityContent> = {
   buford: BUFORD_CONTENT,
   suwanee: SUWANEE_CONTENT,
   "johns-creek": JOHNS_CREEK_CONTENT,
+  "east-point": EAST_POINT_CONTENT,
+  buckhead: BUCKHEAD_CONTENT,
+  cumming: CUMMING_CONTENT,
 };
