@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
+import { getCategories } from "@/lib/blog-categories";
 import { BlogPostCard } from "@/components/BlogPostCard";
 
 export const dynamic = "force-dynamic";
@@ -8,8 +10,15 @@ export const metadata = {
   description: "Tree care tips for North Metro Atlanta homeowners.",
 };
 
-export default function BlogIndexPage() {
-  const posts = getAllPosts();
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const allPosts = getAllPosts();
+  const categories = getCategories();
+  const posts = category ? allPosts.filter((p) => p.category === category) : allPosts;
 
   return (
     <section className="section">
@@ -22,6 +31,27 @@ export default function BlogIndexPage() {
             more from the MMP Tree Service crew.
           </p>
         </div>
+        {categories.length > 0 && (
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <Link
+              href="/blog"
+              className="tag"
+              style={{ fontWeight: category ? 400 : 700 }}
+            >
+              All
+            </Link>{" "}
+            {categories.map((c) => (
+              <Link
+                key={c}
+                href={`/blog?category=${encodeURIComponent(c)}`}
+                className="tag"
+                style={{ fontWeight: category === c ? 700 : 400 }}
+              >
+                {c}
+              </Link>
+            ))}
+          </div>
+        )}
         {posts.length === 0 ? (
           <p>No posts yet — check back soon.</p>
         ) : (
