@@ -751,7 +751,11 @@ describe("MediaGalleryItem", () => {
       />
     );
 
-    expect(screen.getByText(/tree-service-canton-ga/)).toBeInTheDocument();
+    // A longer, more specific match than the bare slug: the <select>'s own
+    // <option value="tree-service-canton-ga"> also renders that exact slug
+    // text, so a bare-slug regex matches twice and getByText throws. The
+    // "Currently hero for:" prefix only appears in the assignment note.
+    expect(screen.getByText(/currently hero for: tree-service-canton-ga/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /clear hero/i })).toBeInTheDocument();
   });
 
@@ -876,7 +880,7 @@ export function MediaGalleryItem({
         </div>
 
         {assignedSlug && (
-          <p className="form-note">
+          <div className="form-note">
             Currently hero for: {assignedSlug}
             <form action={clearHeroAction} style={{ display: "inline" }}>
               <input type="hidden" name="slug" value={assignedSlug} />
@@ -884,7 +888,7 @@ export function MediaGalleryItem({
                 Clear Hero
               </button>
             </form>
-          </p>
+          </div>
         )}
 
         <form action={deleteAction}>
