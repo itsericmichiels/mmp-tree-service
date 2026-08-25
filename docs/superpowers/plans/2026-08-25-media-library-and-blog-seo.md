@@ -1607,10 +1607,13 @@ git commit -m "Add extensible blog category list (seeded with 4 defaults)"
 - Modify: `lib/blog.test.ts`
 - Modify: `lib/blogFormData.ts`
 - Modify: `lib/blog-actions.ts`
+- Modify: `components/admin/BlogPostForm.test.tsx` (minimal patch only — see Step 6a; the full rewrite of this file, including its new test cases, is Task 10's job)
 
 **Interfaces:**
 - Consumes: `addCategory` from `lib/blog-categories.ts` (Task 8).
 - Produces: `BlogPost` type gains `coverImageAlt: string`, `category: string`, `tags: string[]`.
+
+**Preflight note:** adding these fields as required makes every existing `BlogPost`-typed object literal in the codebase fail `tsc --noEmit` until it's updated. `lib/blog.test.ts`'s literals are updated in Step 1 below. There is exactly one other such literal outside this task's own files: `components/admin/BlogPostForm.test.tsx`'s `initialPost` object (around line 35), which is assigned to `BlogPostForm`'s `initialPost?: BlogPost` prop. Step 6a patches only that literal's fields — it does not touch anything else in that file (new test cases and the `categories` prop wiring are Task 10's job) — so that this task's own `tsc --noEmit` check is actually true when you run it, rather than passing only once Task 10 also lands.
 
 - [ ] **Step 1: Update the failing/changed tests**
 
@@ -2079,13 +2082,50 @@ export async function savePostAction(formData: FormData): Promise<void> {
 Run: `npx vitest run lib/blog.test.ts`
 Expected: PASS.
 
-Run: `npx tsc --noEmit`
-Expected: no errors (this will surface any other file still constructing a `BlogPost` literal without the new fields — fix any such call site the same way as above before moving on; Task 10 covers `BlogPostForm.test.tsx` specifically).
+- [ ] **Step 6a: Patch the one other `BlogPost`-typed literal so `tsc --noEmit` is clean**
 
-- [ ] **Step 7: Commit**
+In `components/admin/BlogPostForm.test.tsx`, find the `initialPost` object literal (in the third test, "never changes the slug field..."):
+
+```ts
+    const initialPost = {
+      slug: "existing-post",
+      title: "Existing Post",
+      date: "2026-08-24",
+      excerpt: "An excerpt.",
+      coverImage: "https://example.com/x.jpg",
+      seoTitle: "Existing Post SEO",
+      seoDescription: "SEO description.",
+      bodyMarkdown: "Body.",
+    };
+```
+
+Add the three new fields (don't change anything else in the file — no new test cases, no `categories` prop on the `<BlogPostForm>` render calls below it; that's Task 10's job and doing it here would just get overwritten):
+
+```ts
+    const initialPost = {
+      slug: "existing-post",
+      title: "Existing Post",
+      date: "2026-08-24",
+      excerpt: "An excerpt.",
+      coverImage: "https://example.com/x.jpg",
+      coverImageAlt: "Existing alt text",
+      category: "Tree Care Tips",
+      tags: ["oak"],
+      seoTitle: "Existing Post SEO",
+      seoDescription: "SEO description.",
+      bodyMarkdown: "Body.",
+    };
+```
+
+- [ ] **Step 7: Run `tsc` to verify the whole project compiles**
+
+Run: `npx tsc --noEmit`
+Expected: no errors. If any other file besides `lib/blog.test.ts` and `components/admin/BlogPostForm.test.tsx` fails because it constructs a `BlogPost` literal, that's a real gap this plan's preflight scan didn't catch — add the three fields to that literal too, using the same values pattern as above, before moving on.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add lib/blog.ts lib/blog.test.ts lib/blogFormData.ts lib/blog-actions.ts
+git add lib/blog.ts lib/blog.test.ts lib/blogFormData.ts lib/blog-actions.ts components/admin/BlogPostForm.test.tsx
 git commit -m "Add category, tags, and cover image alt text to the BlogPost data model"
 ```
 
