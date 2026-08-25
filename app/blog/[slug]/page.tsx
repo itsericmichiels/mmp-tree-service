@@ -61,7 +61,12 @@ export default async function BlogPostPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // Escape `<` to prevent HTML-parser-level script tag breakout.
+        // JSON.stringify does not escape `<`, so titles with `</script>` would
+        // close the script tag prematurely at the HTML parser level, allowing
+        // script injection. Unicode escape `<` is valid JSON and safely parsed
+        // by search engines' structured-data readers.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <section className="section">
         <div className="container" style={{ maxWidth: 760 }}>
