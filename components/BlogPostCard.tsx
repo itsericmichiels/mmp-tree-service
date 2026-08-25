@@ -4,8 +4,9 @@ import type { BlogPost } from "@/lib/blog";
 export function BlogPostCard({ post }: { post: BlogPost }) {
   return (
     <div className="card">
-      <img className="card__img" src={post.coverImage} alt={post.title} />
+      <img className="card__img" src={post.coverImage} alt={post.coverImageAlt} />
       <div className="card__body">
+        {post.category && <span className="tag">{post.category}</span>}
         <h3>{post.title}</h3>
         <p>{post.excerpt}</p>
         <p style={{ fontSize: ".8rem", color: "var(--ink-soft)" }}>{post.date}</p>

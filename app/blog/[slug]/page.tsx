@@ -16,6 +16,19 @@ export async function generateMetadata({
   return {
     title: post.seoTitle,
     description: post.seoDescription,
+    openGraph: {
+      title: post.seoTitle,
+      description: post.seoDescription,
+      images: [post.coverImage],
+      type: "article",
+      publishedTime: post.date,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.seoTitle,
+      description: post.seoDescription,
+      images: [post.coverImage],
+    },
   };
 }
 
@@ -33,15 +46,30 @@ export default async function BlogPostPage({
 
   const html = renderMarkdownToHtml(post.bodyMarkdown);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    image: [post.coverImage],
+    datePublished: post.date,
+    author: { "@type": "Organization", name: "MMP Tree Service LLC" },
+    publisher: { "@type": "Organization", name: "MMP Tree Service LLC" },
+    mainEntityOfPage: `https://mmptreeservice.com/blog/${post.slug}`,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="section">
         <div className="container" style={{ maxWidth: 760 }}>
           <p style={{ color: "var(--ink-soft)", fontSize: ".85rem" }}>{post.date}</p>
           <h1>{post.title}</h1>
           <img
             src={post.coverImage}
-            alt={post.title}
+            alt={post.coverImageAlt}
             style={{ width: "100%", borderRadius: "var(--radius)", margin: "20px 0" }}
           />
           <div dangerouslySetInnerHTML={{ __html: html }} />
