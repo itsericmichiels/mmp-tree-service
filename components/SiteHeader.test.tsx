@@ -26,12 +26,14 @@ describe("SiteHeader", () => {
 
   it("renders Canton's 5 services as flyout links", () => {
     render(<SiteHeader />);
-    // The top-level "Services" dropdown always points at Canton by design
-    // (it's not city-scoped), regardless of how many other cities are built.
+    // The top-level "Services" dropdown points at the general (non-city)
+    // page for any service that has one (currently just Tree Removal), and
+    // falls back to Canton for the rest until they get their own general
+    // page too.
     const servicesPanel = document.getElementById("nav-services-panel")!;
     expect(
       within(servicesPanel).getByRole("link", { name: /tree removal/i })
-    ).toHaveAttribute("href", "/tree-removal-canton-ga");
+    ).toHaveAttribute("href", "/tree-removal");
     expect(
       within(servicesPanel).getByRole("link", { name: /emergency tree service/i })
     ).toHaveAttribute("href", "/emergency-tree-service-canton-ga");

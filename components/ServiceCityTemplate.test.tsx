@@ -11,6 +11,7 @@ const treeRemoval: Service = {
   name: "Tree Removal",
   shortDescription: "x",
   icon: "tree-removal",
+  hasGeneralPage: true,
 };
 const content = {
   intro: "Intro text.",

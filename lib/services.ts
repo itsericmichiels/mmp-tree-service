@@ -3,6 +3,11 @@ export type Service = {
   name: string;
   shortDescription: string;
   icon: string;
+  // Whether a general, non-city-specific page exists for this service at
+  // /<slug> (e.g. /tree-removal), covering North Georgia broadly rather
+  // than one city. Built out one service at a time, same staged pattern
+  // as CITIES' isBuilt flag.
+  hasGeneralPage: boolean;
 };
 
 export const SERVICES: Service[] = [
@@ -12,6 +17,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Safe, professional removal for trees of any size or condition.",
     icon: "tree-removal",
+    hasGeneralPage: true,
   },
   {
     slug: "tree-trimming",
@@ -19,6 +25,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Certified-arborist pruning that improves structure and long-term health.",
     icon: "tree-trimming",
+    hasGeneralPage: false,
   },
   {
     slug: "stump-grinding",
@@ -26,6 +33,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Stumps ground below grade so you can reclaim your yard fast.",
     icon: "stump-grinding",
+    hasGeneralPage: false,
   },
   {
     slug: "lot-clearing",
@@ -33,6 +41,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Complete vegetation removal and site prep for lots of any size.",
     icon: "lot-clearing",
+    hasGeneralPage: false,
   },
   {
     slug: "emergency-tree-service",
@@ -40,5 +49,6 @@ export const SERVICES: Service[] = [
     shortDescription:
       "24/7 storm response — dangerous trees removed fast, insurance-ready.",
     icon: "emergency",
+    hasGeneralPage: false,
   },
 ];

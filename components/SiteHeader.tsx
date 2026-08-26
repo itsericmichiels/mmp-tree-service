@@ -112,7 +112,11 @@ export function SiteHeader() {
                 {SERVICES.map((service) => (
                   <Link
                     key={service.slug}
-                    href={`/${serviceCitySlug(service, canton)}`}
+                    href={
+                      service.hasGeneralPage
+                        ? `/${service.slug}`
+                        : `/${serviceCitySlug(service, canton)}`
+                    }
                     className="dropdown__row"
                   >
                     {service.name}

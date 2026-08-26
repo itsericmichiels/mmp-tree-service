@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { resolveSlug, builtSlugs } from "@/lib/slugs";
 import { CITY_CONTENT } from "@/content";
+import { GENERAL_SERVICE_CONTENT } from "@/content/generalServices";
 import { CityHubTemplate } from "@/components/CityHubTemplate";
 import { ServiceCityTemplate } from "@/components/ServiceCityTemplate";
+import { GeneralServiceTemplate } from "@/components/GeneralServiceTemplate";
 import { getHeroImageUrl } from "@/lib/hero-images";
 
 const DEFAULT_METADATA: Metadata = {
@@ -32,6 +34,16 @@ export async function generateMetadata({
 
   if (!resolved) {
     return DEFAULT_METADATA;
+  }
+
+  if (resolved.type === "generalService") {
+    const generalContent = GENERAL_SERVICE_CONTENT[resolved.service.slug];
+    return {
+      title: `${resolved.service.name} in North Georgia | MMP Tree Service LLC`,
+      description: generalContent
+        ? truncate(generalContent.intro)
+        : DEFAULT_METADATA.description,
+    };
   }
 
   const content = CITY_CONTENT[resolved.city.slug];
@@ -67,6 +79,14 @@ export default async function CityOrServicePage({
 
   if (!resolved) {
     notFound();
+  }
+
+  if (resolved.type === "generalService") {
+    const generalContent = GENERAL_SERVICE_CONTENT[resolved.service.slug];
+    if (!generalContent) {
+      notFound();
+    }
+    return <GeneralServiceTemplate service={resolved.service} content={generalContent} />;
   }
 
   // Defensive: resolveSlug already gates on lib/cities.ts's isBuilt flag, so

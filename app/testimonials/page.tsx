@@ -1,22 +1,9 @@
+import { REVIEWS } from "@/lib/testimonials";
+
 export const metadata = {
   title: "Testimonials | MMP Tree Service LLC",
   description: "4.8 out of 5 stars across 34 Google reviews — see what MMP Tree Service customers say.",
 };
-
-const REVIEWS = [
-  {
-    who: "Michael Todd",
-    text: "This family-owned and operated company did an excellent job — they safely took down several trees and handled everything with care and professionalism.",
-  },
-  {
-    who: "Michael Whitworth",
-    text: "Excellent experience from start to finish — professional, efficient, and clearly skilled. They removed several large trees quickly and safely, and left the yard spotless.",
-  },
-  {
-    who: "Moses Mo",
-    text: "Family owned, hard working, excellent clean up, on time, quick, fair pricing, works with client's budget, very satisfied with services!",
-  },
-];
 
 export default function TestimonialsPage() {
   return (

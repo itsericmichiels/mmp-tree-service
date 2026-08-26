@@ -31,6 +31,15 @@ describe("resolveSlug", () => {
     expect(resolved).toEqual({ type: "service", service: treeRemoval, city: canton });
   });
 
+  it("resolves a general (non-city) service page slug", () => {
+    const resolved = resolveSlug("tree-removal");
+    expect(resolved).toEqual({ type: "generalService", service: treeRemoval });
+  });
+
+  it("returns null for a service's bare slug when it has no general page yet", () => {
+    expect(resolveSlug("tree-trimming")).toBeNull();
+  });
+
   it("returns null for a city not in the service area list", () => {
     // All 27 real cities are built out now, so this uses a well-formed but
     // fictional city slug rather than a real, currently-unbuilt one.
@@ -44,18 +53,28 @@ describe("resolveSlug", () => {
 });
 
 describe("builtSlugs", () => {
-  it("returns exactly one hub slug + one service slug per built city per service", () => {
+  it("returns one general-service slug per service with a general page, plus one hub slug + one service slug per built city per service", () => {
     const builtCities = CITIES.filter((c) => c.isBuilt);
-    const expected = builtCities.flatMap((city) => [
-      citySlug(city),
-      ...SERVICES.map((service) => serviceCitySlug(service, city)),
-    ]);
+    const generalServiceSlugs = SERVICES.filter((s) => s.hasGeneralPage).map((s) => s.slug);
+    const expected = [
+      ...generalServiceSlugs,
+      ...builtCities.flatMap((city) => [
+        citySlug(city),
+        ...SERVICES.map((service) => serviceCitySlug(service, city)),
+      ]),
+    ];
     expect(builtSlugs().sort()).toEqual(expected.sort());
-    expect(builtSlugs()).toHaveLength(builtCities.length * (SERVICES.length + 1));
+    expect(builtSlugs()).toHaveLength(
+      generalServiceSlugs.length + builtCities.length * (SERVICES.length + 1)
+    );
   });
 
   it("includes Canton's hub and service slugs", () => {
     expect(builtSlugs()).toContain("tree-service-canton-ga");
     expect(builtSlugs()).toContain("tree-removal-canton-ga");
+  });
+
+  it("includes Tree Removal's general (non-city) page slug", () => {
+    expect(builtSlugs()).toContain("tree-removal");
   });
 });
