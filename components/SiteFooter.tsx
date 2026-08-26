@@ -1,7 +1,12 @@
 // components/SiteFooter.tsx
 import Link from "next/link";
+import { SERVICES } from "@/lib/services";
+import { CITIES } from "@/lib/cities";
+import { serviceCitySlug } from "@/lib/slugs";
 
 export function SiteFooter() {
+  const canton = CITIES.find((c) => c.slug === "canton")!;
+
   return (
     <footer className="site-footer">
       <div className="container">
@@ -20,11 +25,19 @@ export function SiteFooter() {
           <div>
             <h4>Services</h4>
             <ul>
-              <li><Link href="/tree-removal-canton-ga">Tree Removal</Link></li>
-              <li><Link href="/tree-trimming-canton-ga">Tree Trimming</Link></li>
-              <li><Link href="/stump-grinding-canton-ga">Stump Grinding</Link></li>
-              <li><Link href="/lot-clearing-canton-ga">Lot Clearing</Link></li>
-              <li><Link href="/emergency-tree-service-canton-ga">Emergency Tree Service</Link></li>
+              {SERVICES.map((service) => (
+                <li key={service.slug}>
+                  <Link
+                    href={
+                      service.hasGeneralPage
+                        ? `/${service.slug}`
+                        : `/${serviceCitySlug(service, canton)}`
+                    }
+                  >
+                    {service.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
