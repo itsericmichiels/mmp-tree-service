@@ -212,6 +212,14 @@ img{ max-width:100%; display:block; }
 }
 .hero__content{ max-width: 680px; }
 .hero__content .lead{ color: rgba(255,255,255,.92); font-size: 1.1rem; }
+/* The global `p{ color: var(--ink-soft) }` rule directly targets the <p>
+   tags MarkdownBlock renders inside .lead, and a rule matching an element
+   directly always wins over a color the element would otherwise inherit
+   from its parent — regardless of the parent selector's specificity. Without
+   this, markdown-rendered hero intros (multiple paragraphs) render in the
+   dark body-text color instead of the intended near-white, and disappear
+   against a busy photo. */
+.hero__content .lead p{ color: inherit; }
 .hero__content .lead a{ color: #fff; text-decoration: underline; }
 .hero__actions{ display:flex; gap:16px; flex-wrap:wrap; margin-top: 28px; }
 .hero__breadcrumb{ color: rgba(255,255,255,.75); font-size:.85rem; margin-bottom: 18px; }
@@ -284,6 +292,7 @@ img{ max-width:100%; display:block; }
 .split{ display:grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items:start; }
 .split--reverse{ direction: rtl; }
 .split--reverse > *{ direction: ltr; }
+.sticky-sidebar{ position: sticky; top: 128px; }
 
 /* Map + estimate form --------------------------------------------------------*/
 .map-embed{
@@ -433,6 +442,7 @@ img{ max-width:100%; display:block; }
   .nav__links{ display:none; }
   .grid--3, .grid--4{ grid-template-columns: repeat(2,1fr); }
   .split{ grid-template-columns: 1fr; }
+  .sticky-sidebar{ position: static; }
   .area-grid{ grid-template-columns: repeat(2,1fr); }
   .footer-grid{ grid-template-columns: 1fr 1fr; }
   body{ padding-top: 84px; }

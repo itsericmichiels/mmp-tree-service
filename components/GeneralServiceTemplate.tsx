@@ -12,6 +12,24 @@ import { MarkdownBlock } from "./MarkdownBlock";
 const HERO_URL =
   "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1800&q=80";
 
+function CtaBand({ title, service }: { title: string; service: Service }) {
+  return (
+    <section className="section section--green">
+      <div className="container" style={{ textAlign: "center" }}>
+        <h2>{title}</h2>
+        <div className="hero__actions" style={{ justifyContent: "center" }}>
+          <Link href="/contact" className="btn btn-orange">
+            Get a Free Estimate
+          </Link>
+          <a href="tel:4704030215" className="btn btn-outline-light">
+            📞 Call (470) 403-0215
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function GeneralServiceTemplate({
   service,
   content,
@@ -45,71 +63,54 @@ export function GeneralServiceTemplate({
       </section>
 
       <section className="section">
-        <div className="container" style={{ maxWidth: 860, margin: "0 auto" }}>
-          <h2>{content.costFactors.title}</h2>
-          <p>{content.costFactors.intro}</p>
-          <ul className="check-list">
-            {content.costFactors.items.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        <div className="container split">
+          <div>
+            <h2>{content.costFactors.title}</h2>
+            <p>{content.costFactors.intro}</p>
+            <ul className="check-list">
+              {content.costFactors.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
 
-      <section className="section section--cream">
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Why It Matters</span>
-            <h2>{content.whyNeeded.title}</h2>
-          </div>
-          <div className="grid grid--2">
-            {content.whyNeeded.reasons.map((reason) => (
-              <div className="card" key={reason.title}>
-                <div className="card__body">
-                  <h3>{reason.title}</h3>
-                  <MarkdownBlock markdown={reason.body} />
-                </div>
+            <h2 style={{ marginTop: 40 }}>{content.whyNeeded.title}</h2>
+            {content.whyNeeded.reasons.map((reason, i) => (
+              <div key={reason.title} style={{ marginBottom: 20 }}>
+                <h3>
+                  {i + 1}. {reason.title}
+                </h3>
+                <MarkdownBlock markdown={reason.body} />
+              </div>
+            ))}
+
+            <h2 style={{ marginTop: 40 }}>{content.whyChooseUs.title}</h2>
+            {content.whyChooseUs.reasons.map((reason, i) => (
+              <div key={reason.title} style={{ marginBottom: 20 }}>
+                <h3>
+                  {i + 1}. {reason.title}
+                </h3>
+                <MarkdownBlock markdown={reason.body} />
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      <section className="section">
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Why MMP</span>
-            <h2>{content.whyChooseUs.title}</h2>
-          </div>
-          <div className="grid grid--3">
-            {content.whyChooseUs.reasons.map((reason) => (
-              <div className="card" key={reason.title}>
-                <div className="card__body">
-                  <h3>{reason.title}</h3>
-                  <MarkdownBlock markdown={reason.body} />
-                </div>
-              </div>
-            ))}
+          <div className="sticky-sidebar">
+            <EstimateForm />
+            <div className="estimate-panel" style={{ marginTop: 24 }}>
+              <ul className="check-list">
+                <li>Licensed &amp; Insured</li>
+                <li>ISA Certified Arborists</li>
+                <li>Family-Owned, Not a Franchise</li>
+                <li>24/7 Emergency Response</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section section--green">
-        <div className="container" style={{ textAlign: "center", maxWidth: 720, margin: "0 auto" }}>
-          <h2>{content.cta.title}</h2>
-          <p>{content.cta.body}</p>
-          <div className="hero__actions" style={{ justifyContent: "center" }}>
-            <Link href="/contact" className="btn btn-orange">
-              Get a Free Estimate
-            </Link>
-            <a href="tel:4704030215" className="btn btn-outline-light">
-              📞 Call (470) 403-0215
-            </a>
-          </div>
-        </div>
-      </section>
+      <CtaBand title={content.cta.title} service={service} />
 
-      <section className="section" id="service-areas">
+      <section className="section section--cream" id="service-areas">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Where We Work</span>
@@ -133,7 +134,7 @@ export function GeneralServiceTemplate({
         </div>
       </section>
 
-      <section className="section section--cream">
+      <section className="section">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">FAQs</span>
@@ -148,7 +149,9 @@ export function GeneralServiceTemplate({
         </div>
       </section>
 
-      <section className="section">
+      <CtaBand title="Ready to Book a Service?" service={service} />
+
+      <section className="section section--cream">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Reviews</span>
@@ -170,14 +173,18 @@ export function GeneralServiceTemplate({
         </div>
       </section>
 
-      <section className="section section--green" id="estimate">
-        <div className="container split">
-          <div>
+      <section className="section" id="estimate">
+        <div className="container">
+          <div className="section-head">
             <span className="eyebrow">Get Started</span>
             <h2>Request Your Free {service.name} Estimate</h2>
-            <MapEmbed />
+            <p>
+              Scroll up to the form on this page, or{" "}
+              <a href="tel:4704030215">call (470) 403-0215</a> — we'll walk your property and give
+              you a firm number before any cutting starts.
+            </p>
           </div>
-          <EstimateForm />
+          <MapEmbed />
         </div>
       </section>
     </>
