@@ -50,7 +50,7 @@ export function GeneralServiceTemplate({
             <Link href="/">Home</Link> / {service.name}
           </p>
           <h1>{service.name} in North Georgia</h1>
-          <MarkdownBlock className="lead" markdown={content.intro} />
+          <p className="lead">{content.heroTagline}</p>
           <div className="hero__actions">
             <Link href="/contact" className="btn btn-orange">
               Get a Free Estimate
@@ -59,6 +59,12 @@ export function GeneralServiceTemplate({
               📞 Call (470) 403-0215
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="section section--tight">
+        <div className="container" style={{ maxWidth: 860, margin: "0 auto" }}>
+          <MarkdownBlock markdown={content.intro} />
         </div>
       </section>
 

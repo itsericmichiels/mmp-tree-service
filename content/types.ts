@@ -18,6 +18,10 @@ export type CityContent = {
 // Content for a general, non-city-specific service page (e.g. /tree-removal)
 // covering North Georgia broadly rather than one city.
 export type GeneralServicePageContent = {
+  // Short, one-sentence line shown directly on the hero photo. Keep this
+  // brief — the full intro (below) renders as regular body text right
+  // after the hero, not overlaid on the image.
+  heroTagline: string;
   intro: string;
   costFactors: {
     title: string;
