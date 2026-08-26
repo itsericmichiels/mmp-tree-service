@@ -132,7 +132,7 @@ img{ max-width:100%; display:block; }
 .topbar a{ color: #fff; }
 .topbar__item{ display:flex; align-items:center; gap:.4em; }
 .topbar__badges{ display:flex; align-items:center; gap:14px; }
-.topbar__badges img{ height:28px; width:auto; }
+.topbar__badges img{ height:44px; width:auto; }
 
 /* Header / nav ------------------------------------------------------------ */
 .site-header{
