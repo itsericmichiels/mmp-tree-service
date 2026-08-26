@@ -36,8 +36,14 @@ describe("resolveSlug", () => {
     expect(resolved).toEqual({ type: "generalService", service: treeRemoval });
   });
 
-  it("returns null for a service's bare slug when it has no general page yet", () => {
-    expect(resolveSlug("tree-trimming")).toBeNull();
+  it("resolves every service's general page slug now that all 5 have one", () => {
+    for (const service of SERVICES) {
+      expect(resolveSlug(service.slug)).toEqual({ type: "generalService", service });
+    }
+  });
+
+  it("returns null for a slug that doesn't match any service or city", () => {
+    expect(resolveSlug("pressure-washing")).toBeNull();
   });
 
   it("returns null for a city not in the service area list", () => {

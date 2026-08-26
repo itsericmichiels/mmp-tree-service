@@ -35,7 +35,7 @@ export const TREE_REMOVAL_GENERAL_CONTENT: GeneralServicePageContent = {
       },
       {
         title: "Making Room for Construction or Landscaping",
-        body: "New construction, a pool installation, or a landscaping redesign often means clearing one or more trees from the footprint — see our [lot clearing page](/lot-clearing-canton-ga) if you're clearing more than a tree or two.",
+        body: "New construction, a pool installation, or a landscaping redesign often means clearing one or more trees from the footprint — see our [lot clearing page](/lot-clearing) if you're clearing more than a tree or two.",
       },
       {
         title: "A Healthier Overall Landscape",
@@ -89,7 +89,7 @@ export const TREE_REMOVAL_GENERAL_CONTENT: GeneralServicePageContent = {
     {
       question: "Do you offer emergency tree removal?",
       answer:
-        "Yes — we run [24/7 emergency tree service](/emergency-tree-service-canton-ga) across North Metro Atlanta for storm damage, a tree on a structure, or anything blocking a driveway or road. Call (470) 403-0215 any time.",
+        "Yes — we run [24/7 emergency tree service](/emergency-tree-service) across North Metro Atlanta for storm damage, a tree on a structure, or anything blocking a driveway or road. Call (470) 403-0215 any time.",
     },
     {
       question: "Will you also remove the stump?",

@@ -30,11 +30,13 @@ test("keyboard-only user can open the Services dropdown and reach a link", async
     text: document.activeElement?.textContent?.trim(),
   }));
   expect(nextFocused.tag).toBe("A");
-  expect(nextFocused.href).toBe("/tree-removal-canton-ga");
+  // The top-level "Services" dropdown points at each service's general
+  // (non-city) page now that all 5 have one.
+  expect(nextFocused.href).toBe("/tree-removal");
 
   // Activate that link via keyboard and confirm real navigation occurs.
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/tree-removal-canton-ga/);
+  await expect(page).toHaveURL(/\/tree-removal$/);
 });
 
 test("Escape closes an open dropdown", async ({ page }) => {

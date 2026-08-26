@@ -25,7 +25,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Certified-arborist pruning that improves structure and long-term health.",
     icon: "tree-trimming",
-    hasGeneralPage: false,
+    hasGeneralPage: true,
   },
   {
     slug: "stump-grinding",
@@ -33,7 +33,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Stumps ground below grade so you can reclaim your yard fast.",
     icon: "stump-grinding",
-    hasGeneralPage: false,
+    hasGeneralPage: true,
   },
   {
     slug: "lot-clearing",
@@ -41,7 +41,7 @@ export const SERVICES: Service[] = [
     shortDescription:
       "Complete vegetation removal and site prep for lots of any size.",
     icon: "lot-clearing",
-    hasGeneralPage: false,
+    hasGeneralPage: true,
   },
   {
     slug: "emergency-tree-service",
@@ -49,6 +49,6 @@ export const SERVICES: Service[] = [
     shortDescription:
       "24/7 storm response — dangerous trees removed fast, insurance-ready.",
     icon: "emergency",
-    hasGeneralPage: false,
+    hasGeneralPage: true,
   },
 ];
