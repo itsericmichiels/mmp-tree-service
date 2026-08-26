@@ -25,23 +25,25 @@ export function ServiceCityTemplate({
   return (
     <>
       <section
-        className="hero"
+        className="hero hero--plain"
         style={{
           backgroundImage: `url('${heroImageUrl || DEFAULT_SERVICE_HERO_URL}')`,
         }}
-      >
-        <div className="container hero__content">
-          <p className="hero__breadcrumb">
+      />
+
+      <section className="section section--tight">
+        <div className="container" style={{ maxWidth: 860, margin: "0 auto" }}>
+          <p className="breadcrumb">
             <Link href="/">Home</Link> /{" "}
             <Link href={`/${citySlug(city)}`}>{city.name}</Link> / {service.name}
           </p>
           <h1>{service.name} in {city.name}</h1>
-          <MarkdownBlock className="lead" markdown={content.intro} />
+          <MarkdownBlock markdown={content.intro} />
           <div className="hero__actions">
             <Link href="/contact" className="btn btn-orange">
               Get a Free Estimate
             </Link>
-            <a href="tel:4704030215" className="btn btn-outline-light">
+            <a href="tel:4704030215" className="btn btn-green">
               📞 Call (470) 403-0215
             </a>
           </div>

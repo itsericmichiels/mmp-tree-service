@@ -226,6 +226,16 @@ img{ max-width:100%; display:block; }
 .hero__breadcrumb a{ color: rgba(255,255,255,.75); }
 .hero__breadcrumb a:hover{ color:#fff; }
 
+/* A hero band with no text overlaid on the photo at all — title, intro,
+   and CTAs render in a normal content section right below it instead.
+   Used on city hub and city+service pages, where a full paragraph on top
+   of the image read as too much text crowding the photo. */
+.hero--plain{ padding:0; min-height: 320px; }
+.hero--plain::before{ background: linear-gradient(120deg, rgba(11,61,24,.35) 0%, rgba(11,61,24,.15) 100%); }
+
+.breadcrumb{ color: var(--ink-soft); font-size:.85rem; margin-bottom: 10px; }
+.breadcrumb a{ color: var(--green-dark); }
+
 .trust-row{
   display:flex;
   flex-wrap:wrap;
