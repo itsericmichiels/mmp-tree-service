@@ -60,7 +60,9 @@ export function ServiceCityTemplate({
             <h2>{content.localConsiderations.title}</h2>
             <MarkdownBlock markdown={content.localConsiderations.body} />
           </div>
-          <MapEmbed />
+          <div className="sticky-sidebar">
+            <EstimateForm />
+          </div>
         </div>
       </section>
 
@@ -79,13 +81,13 @@ export function ServiceCityTemplate({
         </div>
       </section>
 
-      <section className="section section--green" id="estimate">
+      <section className="section" id="estimate">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Get Started</span>
             <h2>Request Your Free Estimate</h2>
           </div>
-          <EstimateForm />
+          <MapEmbed />
         </div>
       </section>
     </>

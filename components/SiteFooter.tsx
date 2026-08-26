@@ -59,6 +59,12 @@ export function SiteFooter() {
         </div>
         <div className="footer-bottom">
           <span>© 2026 MMP Tree Service LLC. All rights reserved.</span>
+          <span>
+            Website created by{" "}
+            <a href="https://www.exitomarketingagency.com" target="_blank" rel="noopener noreferrer">
+              Exito Marketing Agency
+            </a>
+          </span>
         </div>
       </div>
     </footer>

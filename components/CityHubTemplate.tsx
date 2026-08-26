@@ -47,8 +47,13 @@ export function CityHubTemplate({
       </section>
 
       <section className="section section--cream">
-        <div className="container" style={{ maxWidth: 860, margin: "0 auto" }}>
-          <MarkdownBlock markdown={content.overview} />
+        <div className="container split">
+          <div>
+            <MarkdownBlock markdown={content.overview} />
+          </div>
+          <div className="sticky-sidebar">
+            <EstimateForm />
+          </div>
         </div>
       </section>
 
@@ -91,14 +96,13 @@ export function CityHubTemplate({
         </div>
       </section>
 
-      <section className="section section--green" id="estimate">
-        <div className="container split">
-          <div>
+      <section className="section" id="estimate">
+        <div className="container">
+          <div className="section-head">
             <span className="eyebrow">Get Started</span>
             <h2>Request Your Free Estimate in {city.name}</h2>
-            <MapEmbed />
           </div>
-          <EstimateForm />
+          <MapEmbed />
         </div>
       </section>
     </>
