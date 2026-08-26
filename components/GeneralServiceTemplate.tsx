@@ -126,17 +126,14 @@ export function GeneralServiceTemplate({
               local details, or see the <Link href="/service-areas">full service area list</Link>.
             </p>
           </div>
-          <div className="grid grid--4">
-            {builtCities.map((city) => (
-              <Link
-                key={city.slug}
-                href={`/${serviceCitySlug(service, city)}`}
-                className="area-chip"
-              >
-                {city.name}
-              </Link>
+          <p className="area-list">
+            {builtCities.map((city, i) => (
+              <span key={city.slug}>
+                <Link href={`/${serviceCitySlug(service, city)}`}>{city.name}</Link>
+                {i < builtCities.length - 1 ? " · " : ""}
+              </span>
             ))}
-          </div>
+          </p>
         </div>
       </section>
 

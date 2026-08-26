@@ -386,6 +386,19 @@ img{ max-width:100%; display:block; }
 .area-chip--muted:hover{ border-color: var(--line); background:#fff; }
 .area-chip--muted .arrow{ display:none; }
 
+/* Compact, wrapped inline list of city links — used where a full grid of
+   .area-chip boxes (one per city) would take up too much vertical space,
+   e.g. the "Where We Work" section on a general service page. */
+.area-list{
+  text-align:center;
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 2.2;
+  font-weight:700;
+}
+.area-list a{ color: var(--green-deep); }
+.area-list a:hover{ color: var(--green); }
+
 /* Footer ---------------------------------------------------------------------*/
 .site-footer{ background: var(--green-deep); color: rgba(255,255,255,.75); padding: 56px 0 28px; }
 .site-footer h4{ color:#fff; font-size:1rem; margin-bottom:16px; }
