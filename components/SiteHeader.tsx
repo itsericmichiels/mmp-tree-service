@@ -65,6 +65,9 @@ export function SiteHeader() {
             ✉️ <a href="mailto:mmptreeservicellc@gmail.com">mmptreeservicellc@gmail.com</a>
           </div>
           <div className="topbar__item">🕑 Available 24/7 for Emergencies</div>
+          <div className="topbar__badges">
+            <img src="/bbb-accredited-a-plus.png" alt="BBB Accredited Business, A+ Rating" />
+          </div>
         </div>
       </div>
 
