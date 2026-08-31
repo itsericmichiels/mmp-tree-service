@@ -4,7 +4,7 @@ import { citySlug } from "@/lib/slugs";
 import { SERVICES } from "@/lib/services";
 import { MapEmbed } from "@/components/MapEmbed";
 import { EstimateForm } from "@/components/EstimateForm";
-import { REVIEWS } from "@/lib/testimonials";
+import { getGoogleReviews } from "@/lib/googleReviews";
 
 // Real job photos where we have them, Unsplash stand-ins otherwise — same
 // images used in the client-approved design prototype.
@@ -19,8 +19,9 @@ const SERVICE_IMAGES: Record<string, string> = {
     "https://mmptreeservice.com/wp-content/uploads/2026/01/Emergency-Tree-Service-MMP-Tree-Service-LLC-scaled-375x525.jpg",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
   const builtCities = CITIES.filter((c) => c.isBuilt);
+  const { rating, reviewCount, reviews } = await getGoogleReviews();
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function HomePage() {
           </div>
           <div className="trust-row">
             <div className="trust-row__item">
-              <span className="stars">★★★★★</span> 4.8 / 5 · 34 Google Reviews
+              <span className="stars">★★★★★</span> {rating} / 5 · {reviewCount} Google Reviews
             </div>
             <div className="trust-row__item">✔ Licensed &amp; Insured</div>
             <div className="trust-row__item">✔ BBB A+ Accredited</div>
@@ -172,13 +173,13 @@ export default function HomePage() {
               <span className="stars" style={{ color: "#FFB423" }}>
                 ★★★★★
               </span>{" "}
-              4.8 out of 5 — 34 Google Reviews
+              {rating} out of 5 — {reviewCount} Google Reviews
             </p>
           </div>
           <div className="grid grid--3">
-            {REVIEWS.map((review) => (
+            {reviews.map((review) => (
               <div className="testi-card" key={review.who}>
-                <span className="stars">★★★★★</span>
+                <span className="stars">{"★".repeat(review.rating)}</span>
                 <p>&quot;{review.text}&quot;</p>
                 <div className="who">{review.who}</div>
               </div>

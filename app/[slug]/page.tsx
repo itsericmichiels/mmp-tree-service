@@ -8,6 +8,7 @@ import { CityHubTemplate } from "@/components/CityHubTemplate";
 import { ServiceCityTemplate } from "@/components/ServiceCityTemplate";
 import { GeneralServiceTemplate } from "@/components/GeneralServiceTemplate";
 import { getHeroImageUrl } from "@/lib/hero-images";
+import { getGoogleReviews } from "@/lib/googleReviews";
 
 const DEFAULT_METADATA: Metadata = {
   title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
@@ -86,7 +87,10 @@ export default async function CityOrServicePage({
     if (!generalContent) {
       notFound();
     }
-    return <GeneralServiceTemplate service={resolved.service} content={generalContent} />;
+    const reviews = await getGoogleReviews();
+    return (
+      <GeneralServiceTemplate service={resolved.service} content={generalContent} reviews={reviews} />
+    );
   }
 
   // Defensive: resolveSlug already gates on lib/cities.ts's isBuilt flag, so

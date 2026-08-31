@@ -4,7 +4,7 @@ import type { Service } from "@/lib/services";
 import { CITIES } from "@/lib/cities";
 import { serviceCitySlug } from "@/lib/slugs";
 import type { GeneralServicePageContent } from "@/content/types";
-import { REVIEWS } from "@/lib/testimonials";
+import type { GoogleReviewsData } from "@/lib/googleReviews";
 import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
 import { MarkdownBlock } from "./MarkdownBlock";
@@ -33,9 +33,11 @@ function CtaBand({ title, service }: { title: string; service: Service }) {
 export function GeneralServiceTemplate({
   service,
   content,
+  reviews,
 }: {
   service: Service;
   content: GeneralServicePageContent;
+  reviews: GoogleReviewsData;
 }) {
   const builtCities = CITIES.filter((c) => c.isBuilt);
 
@@ -159,12 +161,12 @@ export function GeneralServiceTemplate({
           <div className="section-head">
             <span className="eyebrow">Reviews</span>
             <h2>What Our Clients Say</h2>
-            <p>4.8 out of 5 — 34 Google Reviews</p>
+            <p>{reviews.rating} out of 5 — {reviews.reviewCount} Google Reviews</p>
           </div>
           <div className="grid grid--3">
-            {REVIEWS.map((review) => (
+            {reviews.reviews.map((review) => (
               <div className="testi-card" key={review.who}>
-                <span className="stars">★★★★★</span>
+                <span className="stars">{"★".repeat(review.rating)}</span>
                 <p>&quot;{review.text}&quot;</p>
                 <div className="who">{review.who}</div>
               </div>

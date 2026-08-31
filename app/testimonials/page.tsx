@@ -1,23 +1,29 @@
-import { REVIEWS } from "@/lib/testimonials";
+import type { Metadata } from "next";
+import { getGoogleReviews } from "@/lib/googleReviews";
 
-export const metadata = {
-  title: "Testimonials | MMP Tree Service LLC",
-  description: "4.8 out of 5 stars across 34 Google reviews — see what MMP Tree Service customers say.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { rating, reviewCount } = await getGoogleReviews();
+  return {
+    title: "Testimonials | MMP Tree Service LLC",
+    description: `${rating} out of 5 stars across ${reviewCount} Google reviews — see what MMP Tree Service customers say.`,
+  };
+}
 
-export default function TestimonialsPage() {
+export default async function TestimonialsPage() {
+  const { rating, reviewCount, reviews } = await getGoogleReviews();
+
   return (
     <section className="section">
       <div className="container">
         <div className="section-head">
           <span className="eyebrow">Testimonials</span>
           <h1>What Our Customers Say</h1>
-          <p>4.8 out of 5 — 34 Google Reviews</p>
+          <p>{rating} out of 5 — {reviewCount} Google Reviews</p>
         </div>
         <div className="grid grid--3">
-          {REVIEWS.map((review) => (
+          {reviews.map((review) => (
             <div className="testi-card" key={review.who}>
-              <span className="stars">★★★★★</span>
+              <span className="stars">{"★".repeat(review.rating)}</span>
               <p>&quot;{review.text}&quot;</p>
               <div className="who">{review.who}</div>
             </div>
