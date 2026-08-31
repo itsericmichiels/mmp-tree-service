@@ -11,10 +11,8 @@ import { REVIEWS } from "@/lib/testimonials";
 const SERVICE_IMAGES: Record<string, string> = {
   "tree-removal":
     "https://mmptreeservice.com/wp-content/uploads/2025/12/MMP-Tree-Service-LLC-tree-removal-scaled-375x525.jpg",
-  "tree-trimming":
-    "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80",
-  "stump-grinding":
-    "https://images.unsplash.com/photo-1754321895426-68b04ba453e3?auto=format&fit=crop&w=800&q=80",
+  "tree-trimming": "/images/services/tree-trimming.jpeg",
+  "stump-grinding": "/images/services/stump-grinding.jpg",
   "lot-clearing":
     "https://images.unsplash.com/photo-1476231682828-37e571bc172f?auto=format&fit=crop&w=800&q=80",
   "emergency-tree-service":
