@@ -19,4 +19,12 @@ export const REVIEWS: Review[] = [
     who: "Moses Mo",
     text: "Family owned, hard working, excellent clean up, on time, quick, fair pricing, works with client's budget, very satisfied with services!",
   },
+  {
+    who: "Eric Cayson",
+    text: "Great service! Extremely professional and proficient. They have my highest recommendation.",
+  },
+  {
+    who: "Charlie Conley",
+    text: "These guys work hard and have the upmost care for the property. Very pleased with their work.",
+  },
 ];

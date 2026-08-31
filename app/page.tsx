@@ -1,13 +1,29 @@
 import Link from "next/link";
 import { CITIES } from "@/lib/cities";
-import { citySlug, serviceCitySlug } from "@/lib/slugs";
+import { citySlug } from "@/lib/slugs";
 import { SERVICES } from "@/lib/services";
 import { MapEmbed } from "@/components/MapEmbed";
 import { EstimateForm } from "@/components/EstimateForm";
+import { REVIEWS } from "@/lib/testimonials";
 
-const canton = CITIES.find((c) => c.slug === "canton")!;
+// Real job photos where we have them, Unsplash stand-ins otherwise — same
+// images used in the client-approved design prototype.
+const SERVICE_IMAGES: Record<string, string> = {
+  "tree-removal":
+    "https://mmptreeservice.com/wp-content/uploads/2025/12/MMP-Tree-Service-LLC-tree-removal-scaled-375x525.jpg",
+  "tree-trimming":
+    "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80",
+  "stump-grinding":
+    "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
+  "lot-clearing":
+    "https://images.unsplash.com/photo-1476231682828-37e571bc172f?auto=format&fit=crop&w=800&q=80",
+  "emergency-tree-service":
+    "https://mmptreeservice.com/wp-content/uploads/2026/01/Emergency-Tree-Service-MMP-Tree-Service-LLC-scaled-375x525.jpg",
+};
 
 export default function HomePage() {
+  const builtCities = CITIES.filter((c) => c.isBuilt);
+
   return (
     <>
       <section
@@ -49,23 +65,80 @@ export default function HomePage() {
           <div className="section-head">
             <span className="eyebrow">What We Do</span>
             <h2>Expert Tree Services Near You</h2>
-            <p>See how it works in Canton, GA, one of the North Metro Atlanta communities we serve.</p>
+            <p>
+              From routine trimming to emergency storm cleanup, our
+              certified crews handle it all across North Metro Atlanta.
+            </p>
           </div>
           <div className="grid grid--3">
             {SERVICES.map((service) => (
               <div className="card" key={service.slug}>
+                <img
+                  className="card__img"
+                  src={SERVICE_IMAGES[service.slug]}
+                  alt={service.name}
+                />
                 <div className="card__body">
                   <h3>{service.name}</h3>
                   <p>{service.shortDescription}</p>
-                  <Link
-                    className="card__link"
-                    href={`/${serviceCitySlug(service, canton)}`}
-                  >
-                    See it in Canton, GA →
+                  <Link className="card__link" href={`/${service.slug}`}>
+                    See Our Services →
                   </Link>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--cream">
+        <div className="container split">
+          <div>
+            <span className="eyebrow">Why Choose MMP</span>
+            <h2>12+ Years of Careful, Local Tree Care</h2>
+            <p>
+              As a local, family-owned company, we take pride in
+              personalized service and long-lasting relationships with our
+              clients — not a national call-center franchise. Every job is
+              priced fairly, explained clearly, and cleaned up completely
+              before we leave.
+            </p>
+            <ul className="check-list">
+              <li>ISA Certified Arborists on every crew</li>
+              <li>Licensed, insured, and BBB A+ accredited</li>
+              <li>State-of-the-art equipment for jobs of any size</li>
+              <li>24/7 emergency response, insurance-claim support</li>
+              <li>Full clean-up — we leave your property better than we found it</li>
+            </ul>
+            <div style={{ marginTop: 28 }}>
+              <Link href="/contact" className="btn btn-green">
+                Get a Free Estimate
+              </Link>
+            </div>
+          </div>
+          <div>
+            <img
+              src="https://mmptreeservice.com/wp-content/uploads/2026/01/MMP-Tree-Service-testimonials-768x1024.jpeg"
+              alt="MMP Tree Service crew at work"
+              style={{ borderRadius: 14, boxShadow: "var(--shadow)" }}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="section credentials-band">
+        <div className="container credentials-row">
+          <div className="credentials-row__item">
+            <span className="credentials-row__icon">📋</span>
+            <span>Licensed</span>
+          </div>
+          <div className="credentials-row__item">
+            <span className="credentials-row__icon">🛡️</span>
+            <span>Insured</span>
+          </div>
+          <div className="credentials-row__item">
+            <span className="credentials-row__icon">🌳</span>
+            <span>ISA Certified Arborists</span>
           </div>
         </div>
       </section>
@@ -77,24 +150,45 @@ export default function HomePage() {
             <h2>Find Your City</h2>
             <p>Click a city to see services and pricing near you.</p>
           </div>
-          <div className="area-grid">
-            {CITIES.slice(0, 8).map((city) =>
-              city.isBuilt ? (
-                <Link key={city.slug} className="area-chip" href={`/${citySlug(city)}`}>
-                  {city.name} <span className="arrow">→</span>
-                </Link>
-              ) : (
-                <span key={city.slug} className="area-chip area-chip--muted">
-                  {city.name}
-                </span>
-              )
-            )}
-          </div>
+          <ul className="city-list-columns">
+            {builtCities.map((city) => (
+              <li key={city.slug}>
+                <Link href={`/${citySlug(city)}`}>{city.name}</Link>
+              </li>
+            ))}
+          </ul>
           <div style={{ textAlign: "center", marginTop: 28 }}>
             <Link href="/service-areas" className="btn btn-green">
               See All 27 Service Areas
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="section section--cream">
+        <div className="container">
+          <div className="section-head">
+            <span className="eyebrow">Testimonials</span>
+            <h2>What Our Customers Say</h2>
+            <p>
+              <span className="stars" style={{ color: "#FFB423" }}>
+                ★★★★★
+              </span>{" "}
+              4.8 out of 5 — 34 Google Reviews
+            </p>
+          </div>
+          <div className="grid grid--3">
+            {REVIEWS.map((review) => (
+              <div className="testi-card" key={review.who}>
+                <span className="stars">★★★★★</span>
+                <p>&quot;{review.text}&quot;</p>
+                <div className="who">{review.who}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ textAlign: "center", marginTop: 24 }}>
+            <Link href="/testimonials">Read more reviews →</Link>
+          </p>
         </div>
       </section>
 

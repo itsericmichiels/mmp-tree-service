@@ -247,6 +247,45 @@ img{ max-width:100%; display:block; }
 .trust-row__item{ display:flex; align-items:center; gap:10px; font-weight:600; font-size:.9rem; color:#fff; }
 .trust-row__item .stars{ color: #FFC94A; letter-spacing:2px; }
 
+/* Short credentials band (Licensed / Insured / ISA Certified) — a clean,
+   icon+label row instead of dated clip-art badge images. */
+.credentials-band{ padding: 36px 0; background: var(--cream); }
+.credentials-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap: 48px;
+}
+.credentials-row__item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:700;
+  font-size:1.05rem;
+  color: var(--green-deep);
+}
+.credentials-row__icon{ font-size:1.6rem; }
+
+/* Compact multi-column list of city links (e.g. "Find Your City" on the
+   homepage) — fits all 27 cities without the vertical space a full grid
+   of .area-chip boxes would take. */
+.city-list-columns{
+  column-count: 3;
+  column-gap: 40px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.city-list-columns li{
+  break-inside: avoid;
+  margin-bottom: 14px;
+  font-weight:700;
+}
+.city-list-columns a{ color: var(--green-deep); }
+.city-list-columns a:hover{ color: var(--green); }
+@media (max-width: 600px){
+  .city-list-columns{ column-count: 2; }
+}
+
 /* Service cards -------------------------------------------------------------*/
 .grid{ display:grid; gap: 28px; }
 .grid--3{ grid-template-columns: repeat(3, 1fr); }
