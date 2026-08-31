@@ -5,6 +5,9 @@ export type Review = {
   who: string;
   text: string;
   rating: number;
+  // Direct link to this specific review on Google Maps — only present for
+  // live-fetched reviews (see lib/googleReviews.ts).
+  googleMapsUri?: string;
 };
 
 // Used only if the live Google Places fetch (lib/googleReviews.ts) fails —

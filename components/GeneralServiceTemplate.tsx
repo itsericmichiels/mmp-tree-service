@@ -4,7 +4,7 @@ import type { Service } from "@/lib/services";
 import { CITIES } from "@/lib/cities";
 import { serviceCitySlug } from "@/lib/slugs";
 import type { GeneralServicePageContent } from "@/content/types";
-import type { GoogleReviewsData } from "@/lib/googleReviews";
+import { GOOGLE_REVIEWS_URL, type GoogleReviewsData } from "@/lib/googleReviews";
 import { MapEmbed } from "./MapEmbed";
 import { EstimateForm } from "./EstimateForm";
 import { MarkdownBlock } from "./MarkdownBlock";
@@ -169,6 +169,14 @@ export function GeneralServiceTemplate({
                 <span className="stars">{"★".repeat(review.rating)}</span>
                 <p>&quot;{review.text}&quot;</p>
                 <div className="who">{review.who}</div>
+                <a
+                  className="testi-card__link"
+                  href={review.googleMapsUri ?? GOOGLE_REVIEWS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read full review on Google →
+                </a>
               </div>
             ))}
           </div>

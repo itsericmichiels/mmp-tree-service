@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getGoogleReviews } from "@/lib/googleReviews";
+import { getGoogleReviews, GOOGLE_REVIEWS_URL } from "@/lib/googleReviews";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { rating, reviewCount } = await getGoogleReviews();
@@ -26,6 +26,14 @@ export default async function TestimonialsPage() {
               <span className="stars">{"★".repeat(review.rating)}</span>
               <p>&quot;{review.text}&quot;</p>
               <div className="who">{review.who}</div>
+              <a
+                className="testi-card__link"
+                href={review.googleMapsUri ?? GOOGLE_REVIEWS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read full review on Google →
+              </a>
             </div>
           ))}
         </div>

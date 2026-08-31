@@ -4,7 +4,7 @@ import { citySlug } from "@/lib/slugs";
 import { SERVICES } from "@/lib/services";
 import { MapEmbed } from "@/components/MapEmbed";
 import { EstimateForm } from "@/components/EstimateForm";
-import { getGoogleReviews } from "@/lib/googleReviews";
+import { getGoogleReviews, GOOGLE_REVIEWS_URL } from "@/lib/googleReviews";
 
 // Real job photos where we have them, Unsplash stand-ins otherwise — same
 // images used in the client-approved design prototype.
@@ -182,6 +182,14 @@ export default async function HomePage() {
                 <span className="stars">{"★".repeat(review.rating)}</span>
                 <p>&quot;{review.text}&quot;</p>
                 <div className="who">{review.who}</div>
+                <a
+                  className="testi-card__link"
+                  href={review.googleMapsUri ?? GOOGLE_REVIEWS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read full review on Google →
+                </a>
               </div>
             ))}
           </div>

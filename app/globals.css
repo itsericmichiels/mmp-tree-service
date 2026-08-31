@@ -407,8 +407,15 @@ img{ max-width:100%; display:block; }
   box-shadow: var(--shadow-sm);
 }
 .testi-card .stars{ color:#FFB423; letter-spacing:2px; margin-bottom:10px; display:block; }
-.testi-card p{ font-size:.92rem; }
+.testi-card p{
+  font-size:.92rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .testi-card .who{ font-weight:700; color: var(--ink); font-size:.88rem; margin-top:10px; }
+.testi-card__link{ display:inline-block; font-size:.82rem; font-weight:700; color: var(--green-deep); margin-top:6px; }
 
 /* Service area grid --------------------------------------------------------- */
 .area-grid{

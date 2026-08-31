@@ -12,6 +12,10 @@ const PLACE_ID = "ChIJd0Cu-g6f9YgRmSDMc-HVSA0"; // MMP Tree Service LLC, Acworth
 // one explicitly matching an allowed value.
 const REFERER = "https://mmptreeservice.com/";
 
+// Fallback link for reviews without their own googleMapsUri (the static
+// fallback list) — opens the business's full review list on Google.
+export const GOOGLE_REVIEWS_URL = `https://search.google.com/local/reviews?placeid=${PLACE_ID}`;
+
 export type GoogleReviewsData = {
   rating: number;
   reviewCount: number;
@@ -29,6 +33,7 @@ type PlacesApiReview = {
   text?: { text?: string };
   originalText?: { text?: string };
   authorAttribution?: { displayName?: string };
+  googleMapsUri?: string;
 };
 
 type PlacesApiResponse = {
@@ -61,6 +66,7 @@ export async function getGoogleReviews(): Promise<GoogleReviewsData> {
         who: r.authorAttribution?.displayName ?? "Google User",
         text: r.text?.text ?? r.originalText?.text ?? "",
         rating: r.rating ?? 5,
+        googleMapsUri: r.googleMapsUri,
       }))
       .filter((r) => r.text.length > 0);
 
