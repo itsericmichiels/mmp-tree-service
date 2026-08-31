@@ -14,7 +14,7 @@ const SERVICE_IMAGES: Record<string, string> = {
   "tree-trimming":
     "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80",
   "stump-grinding":
-    "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1754321895426-68b04ba453e3?auto=format&fit=crop&w=800&q=80",
   "lot-clearing":
     "https://images.unsplash.com/photo-1476231682828-37e571bc172f?auto=format&fit=crop&w=800&q=80",
   "emergency-tree-service":
