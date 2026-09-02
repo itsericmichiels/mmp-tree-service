@@ -119,7 +119,9 @@ export default async function HomePage() {
             <img
               src="https://mmptreeservice.com/wp-content/uploads/2026/01/MMP-Tree-Service-testimonials-768x1024.jpeg"
               alt="MMP Tree Service crew at work"
-              style={{ borderRadius: 14, boxShadow: "var(--shadow)" }}
+              width={768}
+              height={1024}
+              style={{ width: "100%", height: "auto", borderRadius: 14, boxShadow: "var(--shadow)" }}
             />
           </div>
         </div>

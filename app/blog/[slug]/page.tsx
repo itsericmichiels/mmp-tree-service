@@ -76,7 +76,13 @@ export default async function BlogPostPage({
           <img
             src={post.coverImage}
             alt={post.coverImageAlt}
-            style={{ width: "100%", borderRadius: "var(--radius)", margin: "20px 0" }}
+            style={{
+              width: "100%",
+              aspectRatio: "16 / 9",
+              objectFit: "cover",
+              borderRadius: "var(--radius)",
+              margin: "20px 0",
+            }}
           />
           <div dangerouslySetInnerHTML={{ __html: html }} />
         </div>
