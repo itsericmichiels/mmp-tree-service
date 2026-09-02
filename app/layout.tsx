@@ -5,6 +5,7 @@ import Script from "next/script";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { StickyCta } from "@/components/StickyCta";
+import { CookieConsent } from "@/components/CookieConsent";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -41,18 +42,7 @@ export default function RootLayout({
         {children}
         <SiteFooter />
         <StickyCta />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-7VZNE9K9DY"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-7VZNE9K9DY');
-          `}
-        </Script>
+        <CookieConsent />
         <Script
           src="https://link.contentcreatormachine.com/js/form_embed.js"
           strategy="afterInteractive"

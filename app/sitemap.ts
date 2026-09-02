@@ -14,10 +14,12 @@ const STATIC_PATHS = [
   "/contact",
   "/our-work",
   "/blog",
+  "/terms",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const blogPaths = getAllPosts().map((post) => `/blog/${post.slug}`);
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getAllPosts();
+  const blogPaths = posts.map((post) => `/blog/${post.slug}`);
   const paths = [...STATIC_PATHS, ...builtSlugs().map((slug) => `/${slug}`), ...blogPaths];
 
   return paths.map((path) => ({

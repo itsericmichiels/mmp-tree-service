@@ -633,3 +633,39 @@ button.dropdown__trigger{
     padding-left:14px;
   }
 }
+
+/* Cookie consent banner ----------------------------------------------------- */
+.cookie-consent{
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 68px;
+  z-index: 501;
+  background: var(--green-deep, #0b3d18);
+  color: #fff;
+  border-radius: var(--radius, 14px);
+  box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,.25));
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.cookie-consent__text{ margin:0; font-size:.88rem; color: rgba(255,255,255,.9); }
+.cookie-consent__text a{ color:#fff; text-decoration: underline; }
+.cookie-consent__actions{ display:flex; gap:10px; flex-shrink:0; }
+
+@media (max-width: 640px){
+  .cookie-consent{
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    left: 10px;
+    right: 10px;
+    bottom: 62px;
+    padding: 16px;
+  }
+  .cookie-consent__actions{ justify-content: center; }
+}
