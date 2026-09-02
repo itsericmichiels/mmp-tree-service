@@ -16,8 +16,8 @@ export default async function BlogIndexPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const allPosts = getAllPosts();
-  const categories = getCategories();
+  const allPosts = await getAllPosts();
+  const categories = await getCategories();
   const posts = category ? allPosts.filter((p) => p.category === category) : allPosts;
 
   return (

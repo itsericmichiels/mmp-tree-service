@@ -1,7 +1,6 @@
 // lib/media.ts
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
+import { supabase, MEDIA_BUCKET } from "./supabase";
 
 export type MediaItem = {
   id: string;
@@ -12,26 +11,27 @@ export type MediaItem = {
   uploadedAt: string;
 };
 
-export const MEDIA_METADATA_PATH = path.join(process.cwd(), "content/media/media.json");
-export const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
-
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
-function readMetadata(metadataPath: string): MediaItem[] {
-  if (!fs.existsSync(metadataPath)) return [];
-  try {
-    const parsed = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
+type MediaRow = {
+  id: string;
+  filename: string;
+  url: string;
+  alt: string;
+  tags: string[];
+  uploaded_at: string;
+};
 
-function writeMetadata(metadataPath: string, items: MediaItem[]): void {
-  const dir = path.dirname(metadataPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(metadataPath, JSON.stringify(items, null, 2), "utf-8");
+function fromRow(row: MediaRow): MediaItem {
+  return {
+    id: row.id,
+    filename: row.filename,
+    url: row.url,
+    alt: row.alt,
+    tags: row.tags ?? [],
+    uploadedAt: row.uploaded_at,
+  };
 }
 
 function extensionFor(originalFilename: string): string {
@@ -53,25 +53,27 @@ export function isAllowedImage(originalFilename: string, sizeBytes: number): boo
   return ALLOWED_EXTENSIONS.has(ext) && sizeBytes > 0 && sizeBytes <= MAX_FILE_SIZE_BYTES;
 }
 
-export function getAllMedia(metadataPath: string = MEDIA_METADATA_PATH): MediaItem[] {
-  return readMetadata(metadataPath).sort((a, b) => (a.uploadedAt < b.uploadedAt ? 1 : -1));
+export async function getAllMedia(): Promise<MediaItem[]> {
+  const { data, error } = await supabase
+    .from("media")
+    .select("*")
+    .order("uploaded_at", { ascending: false });
+  if (error || !data) return [];
+  return data.map(fromRow);
 }
 
-export function getMediaById(
-  id: string,
-  metadataPath: string = MEDIA_METADATA_PATH
-): MediaItem | null {
-  return readMetadata(metadataPath).find((item) => item.id === id) ?? null;
+export async function getMediaById(id: string): Promise<MediaItem | null> {
+  const { data, error } = await supabase.from("media").select("*").eq("id", id).maybeSingle();
+  if (error || !data) return null;
+  return fromRow(data);
 }
 
-export function saveMediaFile(
+export async function saveMediaFile(
   originalFilename: string,
   buffer: Buffer,
   alt: string,
-  tags: string[] = [],
-  metadataPath: string = MEDIA_METADATA_PATH,
-  uploadsDir: string = UPLOADS_DIR
-): MediaItem {
+  tags: string[] = []
+): Promise<MediaItem> {
   if (!isAllowedImage(originalFilename, buffer.byteLength)) {
     throw new Error(
       `Rejected upload "${originalFilename}": must be jpg/jpeg/png/webp and 10MB or smaller`
@@ -86,65 +88,65 @@ export function saveMediaFile(
   const id = crypto.randomUUID();
   const filename = `${base}-${id.slice(0, 8)}.${ext}`;
 
-  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-  fs.writeFileSync(path.join(uploadsDir, filename), buffer);
+  const contentType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
+  const { error: uploadError } = await supabase.storage
+    .from(MEDIA_BUCKET)
+    .upload(filename, buffer, { contentType });
+  if (uploadError) {
+    throw new Error(`Upload failed: ${uploadError.message}`);
+  }
+
+  const { data: publicUrlData } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(filename);
 
   const item: MediaItem = {
     id,
     filename,
-    url: `/uploads/${filename}`,
+    url: publicUrlData.publicUrl,
     alt: alt.trim(),
     tags: tags.map((t) => t.trim()).filter(Boolean),
     uploadedAt: new Date().toISOString(),
   };
 
-  const items = readMetadata(metadataPath);
-  items.push(item);
-  writeMetadata(metadataPath, items);
+  const { error: insertError } = await supabase.from("media").insert({
+    id: item.id,
+    filename: item.filename,
+    url: item.url,
+    alt: item.alt,
+    tags: item.tags,
+    uploaded_at: item.uploadedAt,
+  });
+  if (insertError) {
+    await supabase.storage.from(MEDIA_BUCKET).remove([filename]);
+    throw new Error(`Failed to save media record: ${insertError.message}`);
+  }
 
   return item;
 }
 
-export function deleteMedia(
-  id: string,
-  metadataPath: string = MEDIA_METADATA_PATH,
-  uploadsDir: string = UPLOADS_DIR
-): boolean {
-  const items = readMetadata(metadataPath);
-  const item = items.find((i) => i.id === id);
+export async function deleteMedia(id: string): Promise<boolean> {
+  const item = await getMediaById(id);
   if (!item) return false;
 
-  const filePath = path.join(uploadsDir, item.filename);
-  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-  writeMetadata(metadataPath, items.filter((i) => i.id !== id));
+  await supabase.storage.from(MEDIA_BUCKET).remove([item.filename]);
+  await supabase.from("media").delete().eq("id", id);
   return true;
 }
 
-export function setMediaTags(
-  id: string,
-  tags: string[],
-  metadataPath: string = MEDIA_METADATA_PATH
-): MediaItem | null {
-  const items = readMetadata(metadataPath);
-  const item = items.find((i) => i.id === id);
-  if (!item) return null;
-  item.tags = tags.map((t) => t.trim()).filter(Boolean);
-  writeMetadata(metadataPath, items);
-  return item;
+export async function setMediaTags(id: string, tags: string[]): Promise<MediaItem | null> {
+  const cleanTags = tags.map((t) => t.trim()).filter(Boolean);
+  const { data, error } = await supabase
+    .from("media")
+    .update({ tags: cleanTags })
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
+  if (error || !data) return null;
+  return fromRow(data);
 }
 
-export function toggleMediaTag(
-  id: string,
-  tag: string,
-  metadataPath: string = MEDIA_METADATA_PATH
-): MediaItem | null {
-  const items = readMetadata(metadataPath);
-  const item = items.find((i) => i.id === id);
+export async function toggleMediaTag(id: string, tag: string): Promise<MediaItem | null> {
+  const item = await getMediaById(id);
   if (!item) return null;
-  item.tags = item.tags.includes(tag)
-    ? item.tags.filter((t) => t !== tag)
-    : [...item.tags, tag];
-  writeMetadata(metadataPath, items);
-  return item;
+  const tags = item.tags.includes(tag) ? item.tags.filter((t) => t !== tag) : [...item.tags, tag];
+  return setMediaTags(id, tags);
 }

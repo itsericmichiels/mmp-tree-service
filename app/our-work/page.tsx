@@ -4,8 +4,9 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Our Work | MMP Tree Service LLC" };
 
-export default function OurWorkPage() {
-  const gallery = getAllMedia().filter((item) => item.tags.includes("our-work"));
+export default async function OurWorkPage() {
+  const media = await getAllMedia();
+  const gallery = media.filter((item) => item.tags.includes("our-work"));
 
   return (
     <section className="section">

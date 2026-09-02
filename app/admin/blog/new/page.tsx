@@ -8,12 +8,13 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function NewBlogPostPage() {
+export default async function NewBlogPostPage() {
+  const categories = await getCategories();
   return (
     <section className="section">
       <div className="container" style={{ maxWidth: 760 }}>
         <h1>New Blog Post</h1>
-        <BlogPostForm action={savePostAction} slugEditable={true} categories={getCategories()} />
+        <BlogPostForm action={savePostAction} slugEditable={true} categories={categories} />
       </div>
     </section>
   );

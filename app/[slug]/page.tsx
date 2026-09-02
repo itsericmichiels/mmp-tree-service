@@ -102,7 +102,7 @@ export default async function CityOrServicePage({
     notFound();
   }
 
-  const heroImageUrl = getHeroImageUrl(slug) ?? undefined;
+  const heroImageUrl = (await getHeroImageUrl(slug)) ?? undefined;
 
   if (resolved.type === "hub") {
     return (

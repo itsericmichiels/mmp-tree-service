@@ -1,7 +1,5 @@
 // lib/blog.ts
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
+import { supabase } from "./supabase";
 
 export type BlogPost = {
   slug: string;
@@ -17,8 +15,6 @@ export type BlogPost = {
   bodyMarkdown: string;
 };
 
-const DEFAULT_POSTS_DIR = path.join(process.cwd(), "content/blog/posts");
-
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function assertValidSlug(slug: string): void {
@@ -27,74 +23,77 @@ function assertValidSlug(slug: string): void {
   }
 }
 
-function readPostFile(filePath: string, slug: string): BlogPost {
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
+type BlogPostRow = {
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  cover_image: string;
+  cover_image_alt: string;
+  category: string;
+  tags: string[];
+  seo_title: string;
+  seo_description: string;
+  body_markdown: string;
+};
+
+function fromRow(row: BlogPostRow): BlogPost {
   return {
-    slug,
-    title: String(data.title ?? ""),
-    date: String(data.date ?? ""),
-    excerpt: String(data.excerpt ?? ""),
-    coverImage: String(data.coverImage ?? ""),
-    coverImageAlt: String(data.coverImageAlt ?? ""),
-    category: String(data.category ?? ""),
-    tags: Array.isArray(data.tags) ? data.tags.map((t: unknown) => String(t)) : [],
-    seoTitle: String(data.seoTitle ?? ""),
-    seoDescription: String(data.seoDescription ?? ""),
-    bodyMarkdown: content.trim(),
+    slug: row.slug,
+    title: row.title,
+    date: row.date,
+    excerpt: row.excerpt,
+    coverImage: row.cover_image,
+    coverImageAlt: row.cover_image_alt,
+    category: row.category,
+    tags: row.tags ?? [],
+    seoTitle: row.seo_title,
+    seoDescription: row.seo_description,
+    bodyMarkdown: row.body_markdown,
   };
 }
 
-export function getAllPosts(postsDir: string = DEFAULT_POSTS_DIR): BlogPost[] {
-  if (!fs.existsSync(postsDir)) return [];
-  const files = fs.readdirSync(postsDir).filter((f) => f.endsWith(".md"));
-  const posts: BlogPost[] = [];
-  for (const file of files) {
-    try {
-      posts.push(readPostFile(path.join(postsDir, file), file.replace(/\.md$/, "")));
-    } catch (error) {
-      console.error(`Skipping unreadable blog post file "${file}":`, error);
-    }
-  }
-  return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .order("date", { ascending: false });
+  if (error || !data) return [];
+  return data.map(fromRow);
 }
 
-export function getPostBySlug(
-  slug: string,
-  postsDir: string = DEFAULT_POSTS_DIR
-): BlogPost | null {
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   if (!SLUG_PATTERN.test(slug)) return null;
-  const filePath = path.join(postsDir, `${slug}.md`);
-  if (!fs.existsSync(filePath)) return null;
-  return readPostFile(filePath, slug);
+  const { data, error } = await supabase.from("blog_posts").select("*").eq("slug", slug).maybeSingle();
+  if (error || !data) return null;
+  return fromRow(data);
 }
 
-export function uniqueSlug(desiredSlug: string, postsDir: string = DEFAULT_POSTS_DIR): string {
-  if (!getPostBySlug(desiredSlug, postsDir)) return desiredSlug;
+export async function uniqueSlug(desiredSlug: string): Promise<string> {
+  if (!(await getPostBySlug(desiredSlug))) return desiredSlug;
   let suffix = 2;
   let candidate = `${desiredSlug}-${suffix}`;
-  while (getPostBySlug(candidate, postsDir)) {
+  while (await getPostBySlug(candidate)) {
     suffix += 1;
     candidate = `${desiredSlug}-${suffix}`;
   }
   return candidate;
 }
 
-export function savePost(post: BlogPost, postsDir: string = DEFAULT_POSTS_DIR): void {
+export async function savePost(post: BlogPost): Promise<void> {
   assertValidSlug(post.slug);
-  if (!fs.existsSync(postsDir)) {
-    fs.mkdirSync(postsDir, { recursive: true });
-  }
-  const fileContents = matter.stringify(post.bodyMarkdown, {
+  const { error } = await supabase.from("blog_posts").upsert({
+    slug: post.slug,
     title: post.title,
     date: post.date,
     excerpt: post.excerpt,
-    coverImage: post.coverImage,
-    coverImageAlt: post.coverImageAlt,
+    cover_image: post.coverImage,
+    cover_image_alt: post.coverImageAlt,
     category: post.category,
     tags: post.tags,
-    seoTitle: post.seoTitle,
-    seoDescription: post.seoDescription,
+    seo_title: post.seoTitle,
+    seo_description: post.seoDescription,
+    body_markdown: post.bodyMarkdown,
   });
-  fs.writeFileSync(path.join(postsDir, `${post.slug}.md`), fileContents, "utf-8");
+  if (error) throw new Error(`Failed to save post: ${error.message}`);
 }

@@ -2,55 +2,46 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { createClient } from "@supabase/supabase-js";
 
 const TEST_JPG_BASE64 =
   "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
-const MEDIA_METADATA_PATH = path.join(process.cwd(), "content/media/media.json");
-const HERO_ASSIGNMENTS_PATH = path.join(process.cwd(), "content/media/hero-assignments.json");
-const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
+// Playwright's test process doesn't load .env.local the way `next` does —
+// read it manually so this file can talk to Supabase directly for cleanup.
+function loadEnvLocal(): void {
+  const envPath = path.join(process.cwd(), ".env.local");
+  if (!fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, "utf-8").split("\n")) {
+    const match = /^([A-Z_][A-Z0-9_]*)=(.*)$/.exec(line.trim());
+    if (match && !process.env[match[1]]) process.env[match[1]] = match[2];
+  }
+}
+loadEnvLocal();
 
-// Safety-net cleanup: scrubs any media.json entry (and its uploaded file and
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
+
+// Safety-net cleanup: scrubs any media row (and its uploaded storage file and
 // hero assignment) whose generated filename starts with the given fixture
 // base name. This matters because a test that fails partway through
 // (e.g. on an assertion after the upload has already landed) would
-// otherwise skip its own admin-UI cleanup steps and leave a stale entry in
-// the real, tracked content/media/media.json / public/uploads/ store —
-// this is a file-based CMS, not a disposable test database. Wrapped in
+// otherwise skip its own admin-UI cleanup steps and leave a stale row in the
+// real, shared Supabase project — not a disposable test database. Wrapped in
 // try/catch so a cleanup failure never masks the original test failure.
-function cleanupOrphanedMedia(fixtureBaseName: string): void {
+async function cleanupOrphanedMedia(fixtureBaseName: string): Promise<void> {
   try {
-    if (!fs.existsSync(MEDIA_METADATA_PATH)) return;
-    const items: Array<{ id: string; filename: string }> = JSON.parse(
-      fs.readFileSync(MEDIA_METADATA_PATH, "utf-8")
+    const { data: items } = await supabase.from("media").select("id, filename");
+    const orphans = (items ?? []).filter((item) =>
+      item.filename.startsWith(`${fixtureBaseName}-`)
     );
-    const orphans = items.filter((item) => item.filename.startsWith(`${fixtureBaseName}-`));
     if (orphans.length === 0) return;
 
-    for (const orphan of orphans) {
-      const filePath = path.join(UPLOADS_DIR, orphan.filename);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    }
-
-    const remaining = items.filter(
-      (item) => !item.filename.startsWith(`${fixtureBaseName}-`)
+    await supabase.storage.from("media").remove(orphans.map((o) => o.filename));
+    await supabase.from("hero_assignments").delete().in(
+      "media_id",
+      orphans.map((o) => o.id)
     );
-    fs.writeFileSync(MEDIA_METADATA_PATH, JSON.stringify(remaining, null, 2), "utf-8");
-
-    if (fs.existsSync(HERO_ASSIGNMENTS_PATH)) {
-      const orphanIds = new Set(orphans.map((o) => o.id));
-      const assignments: Record<string, string> = JSON.parse(
-        fs.readFileSync(HERO_ASSIGNMENTS_PATH, "utf-8")
-      );
-      const filteredEntries = Object.entries(assignments).filter(
-        ([, mediaId]) => !orphanIds.has(mediaId)
-      );
-      fs.writeFileSync(
-        HERO_ASSIGNMENTS_PATH,
-        JSON.stringify(Object.fromEntries(filteredEntries), null, 2),
-        "utf-8"
-      );
-    }
+    await supabase.from("media").delete().in("id", orphans.map((o) => o.id));
   } catch {
     // Best-effort only — never let cleanup itself fail the test.
   }
@@ -112,7 +103,7 @@ test.describe("media library admin", () => {
       // ran, this scrubs the real content/media/media.json and
       // public/uploads/ store so the failure doesn't leave permanent debris
       // in tracked, file-based CMS content.
-      cleanupOrphanedMedia("e2e-fixture-upload");
+      await cleanupOrphanedMedia("e2e-fixture-upload");
     }
   });
 
@@ -165,7 +156,7 @@ test.describe("media library admin", () => {
       // content/media/hero-assignments.json, and public/uploads/ store so
       // the failure doesn't leave permanent debris in tracked, file-based
       // CMS content.
-      cleanupOrphanedMedia("e2e-fixture-hero");
+      await cleanupOrphanedMedia("e2e-fixture-hero");
     }
   });
 });

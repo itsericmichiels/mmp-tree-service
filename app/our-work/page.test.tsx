@@ -13,13 +13,13 @@ import { getAllMedia } from "@/lib/media";
 const mockedGetAllMedia = vi.mocked(getAllMedia);
 
 describe("OurWorkPage", () => {
-  it("shows the placeholder copy when no media is tagged our-work", () => {
-    mockedGetAllMedia.mockReturnValue([]);
-    render(<OurWorkPage />);
+  it("shows the placeholder copy when no media is tagged our-work", async () => {
+    mockedGetAllMedia.mockResolvedValue([]);
+    render(await OurWorkPage());
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
   });
 
-  it("renders a grid of media tagged our-work, excluding untagged media", () => {
+  it("renders a grid of media tagged our-work, excluding untagged media", async () => {
     const tagged: MediaItem = {
       id: "1",
       filename: "job-1.jpg",
@@ -36,9 +36,9 @@ describe("OurWorkPage", () => {
       tags: [],
       uploadedAt: "2026-08-25T00:00:00.000Z",
     };
-    mockedGetAllMedia.mockReturnValue([tagged, untagged]);
+    mockedGetAllMedia.mockResolvedValue([tagged, untagged]);
 
-    render(<OurWorkPage />);
+    render(await OurWorkPage());
 
     expect(screen.getByAltText("A finished tree removal in Canton")).toBeInTheDocument();
     expect(screen.queryByAltText("An unrelated photo")).not.toBeInTheDocument();

@@ -7,8 +7,8 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminBlogListPage() {
-  const posts = getAllPosts();
+export default async function AdminBlogListPage() {
+  const posts = await getAllPosts();
 
   return (
     <section className="section">

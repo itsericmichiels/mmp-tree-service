@@ -1,296 +1,136 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
-import { getAllPosts, getPostBySlug, savePost, uniqueSlug } from "./blog";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { createFakeSupabase } from "./test-utils/fakeSupabase";
 import type { BlogPost } from "./blog";
 
-const fixturesDir = path.join(os.tmpdir(), "mmp-blog-test-fixtures");
+const fakeSupabase = createFakeSupabase();
+vi.mock("./supabase", () => ({ supabase: fakeSupabase, MEDIA_BUCKET: "media" }));
 
-beforeAll(() => {
-  fs.mkdirSync(fixturesDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(fixturesDir, "older-post.md"),
-    `---
-title: "Older Post"
-date: "2026-01-01"
-excerpt: "An older post."
-coverImage: "https://example.com/a.jpg"
-coverImageAlt: "Alt for older post"
-category: "Tree Care Tips"
-tags: ["oak", "pruning"]
-seoTitle: "Older Post SEO"
-seoDescription: "SEO desc"
----
-
-Body of the older post.
-`
-  );
-  fs.writeFileSync(
-    path.join(fixturesDir, "newer-post.md"),
-    `---
-title: "Newer Post"
-date: "2026-06-01"
-excerpt: "A newer post."
-coverImage: "https://example.com/b.jpg"
-coverImageAlt: "Alt for newer post"
-category: "Storm Safety"
-tags: ["storm"]
-seoTitle: "Newer Post SEO"
-seoDescription: "SEO desc"
----
-
-Body of the newer post.
-`
-  );
+beforeEach(() => {
+  for (const key of Object.keys(fakeSupabase.__tables)) delete fakeSupabase.__tables[key];
 });
 
-afterAll(() => {
-  fs.rmSync(fixturesDir, { recursive: true, force: true });
-});
+function makePost(overrides: Partial<BlogPost> = {}): BlogPost {
+  return {
+    slug: "some-post",
+    title: "Some Post",
+    date: "2026-08-24",
+    excerpt: "An excerpt.",
+    coverImage: "https://example.com/x.jpg",
+    coverImageAlt: "Alt text",
+    category: "Tree Care Tips",
+    tags: [],
+    seoTitle: "SEO Title",
+    seoDescription: "SEO description",
+    bodyMarkdown: "Body text.",
+    ...overrides,
+  };
+}
 
 describe("getAllPosts", () => {
-  it("returns all posts sorted newest first", () => {
-    const posts = getAllPosts(fixturesDir);
-    expect(posts.map((p) => p.slug)).toEqual(["newer-post", "older-post"]);
+  it("returns an empty array when there are no posts yet", async () => {
+    const { getAllPosts } = await import("./blog");
+    expect(await getAllPosts()).toEqual([]);
   });
 
-  it("returns an empty array when the posts directory doesn't exist", () => {
-    expect(getAllPosts(path.join(fixturesDir, "does-not-exist"))).toEqual([]);
+  it("returns all posts sorted newest first", async () => {
+    const { savePost, getAllPosts } = await import("./blog");
+    await savePost(makePost({ slug: "older-post", date: "2026-01-01" }));
+    await savePost(makePost({ slug: "newer-post", date: "2026-06-01" }));
+
+    const posts = await getAllPosts();
+    expect(posts.map((p) => p.slug)).toEqual(["newer-post", "older-post"]);
   });
 });
 
 describe("getPostBySlug", () => {
-  it("returns the matching post with parsed frontmatter and body, including category and tags", () => {
-    const post = getPostBySlug("older-post", fixturesDir);
+  it("returns the matching post, including category and tags", async () => {
+    const { savePost, getPostBySlug } = await import("./blog");
+    await savePost(
+      makePost({ slug: "older-post", title: "Older Post", category: "Tree Care Tips", tags: ["oak", "pruning"] })
+    );
+
+    const post = await getPostBySlug("older-post");
     expect(post?.title).toBe("Older Post");
-    expect(post?.date).toBe("2026-01-01");
-    expect(post?.bodyMarkdown).toBe("Body of the older post.");
     expect(post?.category).toBe("Tree Care Tips");
     expect(post?.tags).toEqual(["oak", "pruning"]);
-    expect(post?.coverImageAlt).toBe("Alt for older post");
   });
 
-  it("returns null for a missing slug", () => {
-    expect(getPostBySlug("does-not-exist", fixturesDir)).toBeNull();
+  it("returns null for a missing slug", async () => {
+    const { getPostBySlug } = await import("./blog");
+    expect(await getPostBySlug("does-not-exist")).toBeNull();
   });
 
-  it("defaults category to an empty string and tags to an empty array when frontmatter omits them", () => {
-    fs.writeFileSync(
-      path.join(fixturesDir, "no-category-post.md"),
-      `---
-title: "No Category Post"
-date: "2026-07-01"
-excerpt: "No category set."
-coverImage: "https://example.com/z.jpg"
-seoTitle: "SEO"
-seoDescription: "SEO desc"
----
+  it("returns null for a path-traversal slug instead of querying it", async () => {
+    const { getPostBySlug } = await import("./blog");
+    expect(await getPostBySlug("../../../../etc/passwd")).toBeNull();
+  });
 
-Body.
-`
-    );
-    const post = getPostBySlug("no-category-post", fixturesDir);
-    expect(post?.category).toBe("");
-    expect(post?.tags).toEqual([]);
-    expect(post?.coverImageAlt).toBe("");
+  it("returns null for an empty slug", async () => {
+    const { getPostBySlug } = await import("./blog");
+    expect(await getPostBySlug("")).toBeNull();
   });
 });
 
 describe("savePost", () => {
-  it("writes a post file that getPostBySlug can then read back, including category and tags", () => {
-    savePost(
-      {
+  it("writes a post that getPostBySlug can then read back", async () => {
+    const { savePost, getPostBySlug } = await import("./blog");
+    await savePost(
+      makePost({
         slug: "brand-new-post",
         title: "Brand New Post",
-        date: "2026-08-24",
-        excerpt: "Just written.",
-        coverImage: "https://example.com/c.jpg",
-        coverImageAlt: "A brand new photo",
         category: "Company News",
         tags: ["announcement"],
-        seoTitle: "Brand New SEO",
-        seoDescription: "SEO desc",
         bodyMarkdown: "This is the body.",
-      },
-      fixturesDir
+      })
     );
-    const post = getPostBySlug("brand-new-post", fixturesDir);
+
+    const post = await getPostBySlug("brand-new-post");
     expect(post?.title).toBe("Brand New Post");
     expect(post?.bodyMarkdown).toBe("This is the body.");
     expect(post?.category).toBe("Company News");
     expect(post?.tags).toEqual(["announcement"]);
-    expect(post?.coverImageAlt).toBe("A brand new photo");
   });
 
-  it("creates the posts directory if it doesn't exist yet", () => {
-    const freshDir = path.join(fixturesDir, "fresh-subdir");
-    savePost(
-      {
-        slug: "first-post",
-        title: "First Post",
-        date: "2026-08-24",
-        excerpt: "The very first one.",
-        coverImage: "https://example.com/d.jpg",
-        coverImageAlt: "Alt",
-        category: "Local Guides",
-        tags: [],
-        seoTitle: "First Post SEO",
-        seoDescription: "SEO desc",
-        bodyMarkdown: "Hello world.",
-      },
-      freshDir
+  it("rejects a path-traversal slug instead of saving it", async () => {
+    const { savePost, getAllPosts } = await import("./blog");
+    await expect(savePost(makePost({ slug: "../../../../tmp/pwned-blog-test" }))).rejects.toThrow(
+      /Invalid post slug/
     );
-    expect(getPostBySlug("first-post", freshDir)?.title).toBe("First Post");
+    expect(await getAllPosts()).toEqual([]);
   });
 
-  it("rejects a path-traversal slug instead of writing outside the posts directory", () => {
-    const maliciousPost: BlogPost = {
-      slug: "../../../../tmp/pwned-blog-test",
-      title: "Malicious",
-      date: "2026-08-24",
-      excerpt: "x",
-      coverImage: "x",
-      coverImageAlt: "x",
-      category: "x",
-      tags: [],
-      seoTitle: "x",
-      seoDescription: "x",
-      bodyMarkdown: "x",
-    };
-    expect(() => savePost(maliciousPost, fixturesDir)).toThrow(/Invalid post slug/);
-    expect(fs.existsSync("/tmp/pwned-blog-test.md")).toBe(false);
+  it("rejects an empty slug", async () => {
+    const { savePost } = await import("./blog");
+    await expect(savePost(makePost({ slug: "" }))).rejects.toThrow(/Invalid post slug/);
   });
 
-  it("rejects an empty slug", () => {
-    const emptySlugPost: BlogPost = {
-      slug: "",
-      title: "Empty Slug",
-      date: "2026-08-24",
-      excerpt: "x",
-      coverImage: "x",
-      coverImageAlt: "x",
-      category: "x",
-      tags: [],
-      seoTitle: "x",
-      seoDescription: "x",
-      bodyMarkdown: "x",
-    };
-    expect(() => savePost(emptySlugPost, fixturesDir)).toThrow(/Invalid post slug/);
-  });
-});
+  it("upserts in place when saving the same slug twice, rather than duplicating it", async () => {
+    const { savePost, getAllPosts } = await import("./blog");
+    await savePost(makePost({ slug: "same-slug", title: "First Version" }));
+    await savePost(makePost({ slug: "same-slug", title: "Second Version" }));
 
-describe("getPostBySlug slug validation", () => {
-  it("returns null for a path-traversal slug instead of reading outside the posts directory", () => {
-    expect(getPostBySlug("../../../../etc/passwd", fixturesDir)).toBeNull();
-  });
-
-  it("returns null for an empty slug", () => {
-    expect(getPostBySlug("", fixturesDir)).toBeNull();
+    const posts = await getAllPosts();
+    expect(posts).toHaveLength(1);
+    expect(posts[0].title).toBe("Second Version");
   });
 });
 
 describe("uniqueSlug / create-mode collision handling", () => {
-  it("returns the desired slug unchanged when there is no collision", () => {
-    expect(uniqueSlug("no-collision-slug", fixturesDir)).toBe("no-collision-slug");
+  it("returns the desired slug unchanged when there is no collision", async () => {
+    const { uniqueSlug } = await import("./blog");
+    expect(await uniqueSlug("no-collision-slug")).toBe("no-collision-slug");
   });
 
-  it("appends a numeric suffix when the desired slug already exists", () => {
-    savePost(
-      {
-        slug: "duplicate-title",
-        title: "Duplicate Title",
-        date: "2026-08-24",
-        excerpt: "Original.",
-        coverImage: "https://example.com/e.jpg",
-        coverImageAlt: "Alt",
-        category: "Tree Care Tips",
-        tags: [],
-        seoTitle: "Duplicate SEO",
-        seoDescription: "SEO desc",
-        bodyMarkdown: "Original body.",
-      },
-      fixturesDir
-    );
+  it("appends a numeric suffix when the desired slug already exists", async () => {
+    const { savePost, getPostBySlug, uniqueSlug } = await import("./blog");
+    await savePost(makePost({ slug: "duplicate-title", title: "Duplicate Title" }));
 
-    const deduped = uniqueSlug("duplicate-title", fixturesDir);
+    const deduped = await uniqueSlug("duplicate-title");
     expect(deduped).toBe("duplicate-title-2");
 
-    savePost(
-      {
-        slug: deduped,
-        title: "Duplicate Title (second)",
-        date: "2026-08-24",
-        excerpt: "Second.",
-        coverImage: "https://example.com/f.jpg",
-        coverImageAlt: "Alt 2",
-        category: "Tree Care Tips",
-        tags: [],
-        seoTitle: "Duplicate SEO 2",
-        seoDescription: "SEO desc",
-        bodyMarkdown: "Second body.",
-      },
-      fixturesDir
-    );
+    await savePost(makePost({ slug: deduped, title: "Duplicate Title (second)" }));
 
-    expect(getPostBySlug("duplicate-title", fixturesDir)?.title).toBe("Duplicate Title");
-    expect(getPostBySlug("duplicate-title-2", fixturesDir)?.title).toBe(
-      "Duplicate Title (second)"
-    );
-  });
-});
-
-describe("frontmatter validation at the fs boundary", () => {
-  it("coerces a Date-typed date field to a string instead of throwing", () => {
-    fs.writeFileSync(
-      path.join(fixturesDir, "unquoted-date-post.md"),
-      `---
-title: Unquoted Date Post
-date: 2026-08-24
-excerpt: An excerpt.
-coverImage: https://example.com/g.jpg
-seoTitle: Unquoted Date SEO
-seoDescription: SEO desc
----
-
-Body of the post.
-`
-    );
-
-    const post = getPostBySlug("unquoted-date-post", fixturesDir);
-    expect(post).not.toBeNull();
-    expect(typeof post?.date).toBe("string");
-  });
-
-  it("getAllPosts skips a malformed post file and still returns the valid ones", () => {
-    const malformedDir = path.join(fixturesDir, "malformed-fixtures");
-    fs.mkdirSync(malformedDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(malformedDir, "valid-post.md"),
-      `---
-title: "Valid Post"
-date: "2026-08-24"
-excerpt: "Valid."
-coverImage: "https://example.com/h.jpg"
-seoTitle: "Valid SEO"
-seoDescription: "SEO desc"
----
-
-Valid body.
-`
-    );
-    fs.writeFileSync(
-      path.join(malformedDir, "broken-post.md"),
-      `---
-title: "Broken Post
-date: "2026-08-24"
----
-
-Broken body.
-`
-    );
-
-    const posts = getAllPosts(malformedDir);
-    expect(posts.map((p) => p.slug)).toEqual(["valid-post"]);
+    expect((await getPostBySlug("duplicate-title"))?.title).toBe("Duplicate Title");
+    expect((await getPostBySlug("duplicate-title-2"))?.title).toBe("Duplicate Title (second)");
   });
 });

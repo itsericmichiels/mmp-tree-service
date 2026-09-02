@@ -1,95 +1,81 @@
-import { describe, it, expect, beforeEach, afterAll } from "vitest";
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
-import { saveMediaFile } from "./media";
-import {
-  getHeroImageUrl,
-  assignHero,
-  clearHero,
-  getAllHeroAssignments,
-} from "./hero-images";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { createFakeSupabase } from "./test-utils/fakeSupabase";
 
-const fixturesRoot = path.join(os.tmpdir(), "mmp-hero-images-test-fixtures");
-const assignmentsPath = path.join(fixturesRoot, "hero-assignments.json");
-const metadataPath = path.join(fixturesRoot, "media.json");
-const uploadsDir = path.join(fixturesRoot, "uploads");
+const fakeSupabase = createFakeSupabase();
+vi.mock("./supabase", () => ({ supabase: fakeSupabase, MEDIA_BUCKET: "media" }));
 
 beforeEach(() => {
-  fs.rmSync(fixturesRoot, { recursive: true, force: true });
-  fs.mkdirSync(fixturesRoot, { recursive: true });
-});
-
-afterAll(() => {
-  fs.rmSync(fixturesRoot, { recursive: true, force: true });
+  for (const key of Object.keys(fakeSupabase.__tables)) delete fakeSupabase.__tables[key];
+  for (const key of Object.keys(fakeSupabase.__files)) delete fakeSupabase.__files[key];
 });
 
 describe("getHeroImageUrl", () => {
-  it("returns null when the slug has no assignment file yet", () => {
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBeNull();
+  it("returns null when the slug has no assignment yet", async () => {
+    const { getHeroImageUrl } = await import("./hero-images");
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBeNull();
   });
 
-  it("returns null when the slug has no assignment", () => {
-    assignHero("tree-service-marietta-ga", "some-id", assignmentsPath);
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBeNull();
+  it("returns null when a different slug has an assignment", async () => {
+    const { getHeroImageUrl, assignHero } = await import("./hero-images");
+    await assignHero("tree-service-marietta-ga", "some-id");
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBeNull();
   });
 
-  it("returns the assigned media's URL", () => {
-    const item = saveMediaFile(
-      "canton-oak.jpg",
-      Buffer.from("x"),
-      "A big oak in Canton",
-      [],
-      metadataPath,
-      uploadsDir
-    );
-    assignHero("tree-service-canton-ga", item.id, assignmentsPath);
+  it("returns the assigned media's URL", async () => {
+    const { saveMediaFile } = await import("./media");
+    const { getHeroImageUrl, assignHero } = await import("./hero-images");
+    const item = await saveMediaFile("canton-oak.jpg", Buffer.from("x"), "A big oak in Canton", []);
+    await assignHero("tree-service-canton-ga", item.id);
 
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBe(
-      item.url
-    );
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBe(item.url);
   });
 
-  it("returns null if the assigned media id no longer exists", () => {
-    assignHero("tree-service-canton-ga", "deleted-media-id", assignmentsPath);
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBeNull();
+  it("returns null if the assigned media id no longer exists", async () => {
+    const { getHeroImageUrl, assignHero } = await import("./hero-images");
+    await assignHero("tree-service-canton-ga", "deleted-media-id");
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBeNull();
   });
 });
 
 describe("assignHero / clearHero", () => {
-  it("assignHero overwrites a previous assignment for the same slug", () => {
-    const first = saveMediaFile("a.jpg", Buffer.from("a"), "alt a", [], metadataPath, uploadsDir);
-    const second = saveMediaFile("b.jpg", Buffer.from("b"), "alt b", [], metadataPath, uploadsDir);
+  it("assignHero overwrites a previous assignment for the same slug", async () => {
+    const { saveMediaFile } = await import("./media");
+    const { getHeroImageUrl, assignHero } = await import("./hero-images");
+    const first = await saveMediaFile("a.jpg", Buffer.from("a"), "alt a", []);
+    const second = await saveMediaFile("b.jpg", Buffer.from("b"), "alt b", []);
 
-    assignHero("tree-service-canton-ga", first.id, assignmentsPath);
-    assignHero("tree-service-canton-ga", second.id, assignmentsPath);
+    await assignHero("tree-service-canton-ga", first.id);
+    await assignHero("tree-service-canton-ga", second.id);
 
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBe(
-      second.url
-    );
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBe(second.url);
   });
 
-  it("clearHero removes the assignment", () => {
-    const item = saveMediaFile("a.jpg", Buffer.from("a"), "alt", [], metadataPath, uploadsDir);
-    assignHero("tree-service-canton-ga", item.id, assignmentsPath);
-    clearHero("tree-service-canton-ga", assignmentsPath);
-    expect(getHeroImageUrl("tree-service-canton-ga", assignmentsPath, metadataPath)).toBeNull();
+  it("clearHero removes the assignment", async () => {
+    const { saveMediaFile } = await import("./media");
+    const { getHeroImageUrl, assignHero, clearHero } = await import("./hero-images");
+    const item = await saveMediaFile("a.jpg", Buffer.from("a"), "alt", []);
+    await assignHero("tree-service-canton-ga", item.id);
+    await clearHero("tree-service-canton-ga");
+    expect(await getHeroImageUrl("tree-service-canton-ga")).toBeNull();
   });
 
-  it("clearHero on a slug with no assignment is a no-op, not an error", () => {
-    expect(() => clearHero("never-assigned-slug", assignmentsPath)).not.toThrow();
+  it("clearHero on a slug with no assignment is a no-op, not an error", async () => {
+    const { clearHero } = await import("./hero-images");
+    await expect(clearHero("never-assigned-slug")).resolves.not.toThrow();
   });
 });
 
 describe("getAllHeroAssignments", () => {
-  it("returns an empty object when no file exists yet", () => {
-    expect(getAllHeroAssignments(assignmentsPath)).toEqual({});
+  it("returns an empty object when nothing is assigned yet", async () => {
+    const { getAllHeroAssignments } = await import("./hero-images");
+    expect(await getAllHeroAssignments()).toEqual({});
   });
 
-  it("returns every slug->mediaId assignment", () => {
-    assignHero("tree-service-canton-ga", "id-1", assignmentsPath);
-    assignHero("tree-removal-marietta-ga", "id-2", assignmentsPath);
-    expect(getAllHeroAssignments(assignmentsPath)).toEqual({
+  it("returns every slug->mediaId assignment", async () => {
+    const { assignHero, getAllHeroAssignments } = await import("./hero-images");
+    await assignHero("tree-service-canton-ga", "id-1");
+    await assignHero("tree-removal-marietta-ga", "id-2");
+    expect(await getAllHeroAssignments()).toEqual({
       "tree-service-canton-ga": "id-1",
       "tree-removal-marietta-ga": "id-2",
     });

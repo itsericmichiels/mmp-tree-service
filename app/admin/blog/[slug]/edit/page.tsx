@@ -16,11 +16,13 @@ export default async function EditBlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
+
+  const categories = await getCategories();
 
   return (
     <section className="section">
@@ -30,7 +32,7 @@ export default async function EditBlogPostPage({
           action={savePostAction}
           initialPost={post}
           slugEditable={false}
-          categories={getCategories()}
+          categories={categories}
         />
       </div>
     </section>

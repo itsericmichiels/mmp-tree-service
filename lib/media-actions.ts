@@ -20,7 +20,7 @@ export async function uploadMediaAction(formData: FormData): Promise<void> {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    saveMediaFile(file.name, buffer, alt, tags);
+    await saveMediaFile(file.name, buffer, alt, tags);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Upload failed";
     redirect("/admin/media?error=" + encodeURIComponent(message));
@@ -32,21 +32,21 @@ export async function uploadMediaAction(formData: FormData): Promise<void> {
 export async function deleteMediaAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   if (id) {
-    const assignments = getAllHeroAssignments();
+    const assignments = await getAllHeroAssignments();
     for (const [slug, mediaId] of Object.entries(assignments)) {
       if (mediaId === id) {
-        clearHero(slug);
+        await clearHero(slug);
         revalidatePath(`/${slug}`);
       }
     }
-    deleteMedia(id);
+    await deleteMedia(id);
   }
   redirect("/admin/media");
 }
 
 export async function toggleOurWorkAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
-  if (id) toggleMediaTag(id, "our-work");
+  if (id) await toggleMediaTag(id, "our-work");
   redirect("/admin/media");
 }
 
@@ -54,7 +54,7 @@ export async function assignHeroAction(formData: FormData): Promise<void> {
   const mediaId = String(formData.get("mediaId") ?? "");
   const slug = String(formData.get("slug") ?? "");
   if (slug && mediaId) {
-    assignHero(slug, mediaId);
+    await assignHero(slug, mediaId);
     revalidatePath(`/${slug}`);
   }
   redirect("/admin/media");
@@ -63,7 +63,7 @@ export async function assignHeroAction(formData: FormData): Promise<void> {
 export async function clearHeroAction(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
   if (slug) {
-    clearHero(slug);
+    await clearHero(slug);
     revalidatePath(`/${slug}`);
   }
   redirect("/admin/media");

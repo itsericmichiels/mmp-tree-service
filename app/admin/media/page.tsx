@@ -24,8 +24,8 @@ export default async function AdminMediaPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const media = getAllMedia();
-  const assignments = getAllHeroAssignments();
+  const media = await getAllMedia();
+  const assignments = await getAllHeroAssignments();
   const pageSlugs = builtSlugs();
 
   return (

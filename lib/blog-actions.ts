@@ -9,11 +9,11 @@ export async function savePostAction(formData: FormData): Promise<void> {
   const post = buildPostFromFormData(formData);
   const mode = formData.get("mode") === "edit" ? "edit" : "create";
 
-  if (mode === "create" && getPostBySlug(post.slug)) {
-    post.slug = uniqueSlug(post.slug);
+  if (mode === "create" && (await getPostBySlug(post.slug))) {
+    post.slug = await uniqueSlug(post.slug);
   }
 
-  addCategory(post.category);
-  savePost(post);
+  await addCategory(post.category);
+  await savePost(post);
   redirect(`/blog/${post.slug}`);
 }

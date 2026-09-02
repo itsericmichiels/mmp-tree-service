@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const savePost = vi.fn();
 const getPostBySlug = vi.fn();
 const uniqueSlug = vi.fn();
+const addCategory = vi.fn();
 const redirect = vi.fn((url: string) => {
   throw new Error(`REDIRECT:${url}`);
 });
@@ -11,6 +12,10 @@ vi.mock("@/lib/blog", () => ({
   savePost,
   getPostBySlug,
   uniqueSlug,
+}));
+
+vi.mock("@/lib/blog-categories", () => ({
+  addCategory,
 }));
 
 vi.mock("next/navigation", () => ({

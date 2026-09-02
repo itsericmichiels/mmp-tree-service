@@ -1,60 +1,28 @@
 // lib/hero-images.ts
-import fs from "node:fs";
-import path from "node:path";
-import { MEDIA_METADATA_PATH, getMediaById } from "./media";
+import { supabase } from "./supabase";
+import { getMediaById } from "./media";
 
-export const HERO_ASSIGNMENTS_PATH = path.join(
-  process.cwd(),
-  "content/media/hero-assignments.json"
-);
-
-type HeroAssignments = Record<string, string>;
-
-function readAssignments(assignmentsPath: string): HeroAssignments {
-  if (!fs.existsSync(assignmentsPath)) return {};
-  try {
-    const parsed = JSON.parse(fs.readFileSync(assignmentsPath, "utf-8"));
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-function writeAssignments(assignmentsPath: string, assignments: HeroAssignments): void {
-  const dir = path.dirname(assignmentsPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(assignmentsPath, JSON.stringify(assignments, null, 2), "utf-8");
-}
-
-export function getHeroImageUrl(
-  slug: string,
-  assignmentsPath: string = HERO_ASSIGNMENTS_PATH,
-  metadataPath: string = MEDIA_METADATA_PATH
-): string | null {
-  const mediaId = readAssignments(assignmentsPath)[slug];
-  if (!mediaId) return null;
-  const media = getMediaById(mediaId, metadataPath);
+export async function getHeroImageUrl(slug: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("hero_assignments")
+    .select("media_id")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error || !data) return null;
+  const media = await getMediaById(data.media_id);
   return media ? media.url : null;
 }
 
-export function assignHero(
-  slug: string,
-  mediaId: string,
-  assignmentsPath: string = HERO_ASSIGNMENTS_PATH
-): void {
-  const assignments = readAssignments(assignmentsPath);
-  assignments[slug] = mediaId;
-  writeAssignments(assignmentsPath, assignments);
+export async function assignHero(slug: string, mediaId: string): Promise<void> {
+  await supabase.from("hero_assignments").upsert({ slug, media_id: mediaId });
 }
 
-export function clearHero(slug: string, assignmentsPath: string = HERO_ASSIGNMENTS_PATH): void {
-  const assignments = readAssignments(assignmentsPath);
-  delete assignments[slug];
-  writeAssignments(assignmentsPath, assignments);
+export async function clearHero(slug: string): Promise<void> {
+  await supabase.from("hero_assignments").delete().eq("slug", slug);
 }
 
-export function getAllHeroAssignments(
-  assignmentsPath: string = HERO_ASSIGNMENTS_PATH
-): HeroAssignments {
-  return readAssignments(assignmentsPath);
+export async function getAllHeroAssignments(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from("hero_assignments").select("slug, media_id");
+  if (error || !data) return {};
+  return Object.fromEntries(data.map((row) => [row.slug, row.media_id]));
 }
