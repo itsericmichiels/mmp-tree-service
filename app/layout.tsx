@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
   description:
     "Licensed & insured tree removal, trimming, stump grinding, and 24/7 emergency tree service across North Metro Atlanta.",
+  alternates: { canonical: "/" },
 };
 
 export default function RootLayout({

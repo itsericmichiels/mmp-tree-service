@@ -44,6 +44,7 @@ export async function generateMetadata({
       description: generalContent
         ? truncate(generalContent.intro)
         : DEFAULT_METADATA.description,
+      alternates: { canonical: `/${slug}` },
     };
   }
 
@@ -57,6 +58,7 @@ export async function generateMetadata({
     return {
       title: `Tree Service in ${resolved.city.name} | MMP Tree Service LLC`,
       description: truncate(content.hub.intro),
+      alternates: { canonical: `/${slug}` },
     };
   }
 
@@ -67,6 +69,7 @@ export async function generateMetadata({
     description: serviceContent
       ? truncate(serviceContent.intro)
       : DEFAULT_METADATA.description,
+    alternates: { canonical: `/${slug}` },
   };
 }
 

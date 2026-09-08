@@ -3,6 +3,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata = {
   title: "Terms & Privacy Policy | MMP Tree Service LLC",
   description: "Terms and conditions and privacy policy for MMP Tree Service LLC.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

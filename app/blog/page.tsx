@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Blog | MMP Tree Service LLC",
   description: "Tree care tips for North Metro Atlanta homeowners.",
+  alternates: { canonical: "/blog" },
 };
 
 export default async function BlogIndexPage({

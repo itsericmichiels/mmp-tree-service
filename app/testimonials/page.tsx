@@ -6,6 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Testimonials | MMP Tree Service LLC",
     description: `${rating} out of 5 stars across ${reviewCount} Google reviews — see what MMP Tree Service customers say.`,
+    alternates: { canonical: "/testimonials" },
   };
 }
 

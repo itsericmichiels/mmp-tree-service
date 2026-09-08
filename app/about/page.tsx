@@ -2,6 +2,7 @@ export const metadata = {
   title: "About MMP Tree Service LLC | North Metro Atlanta",
   description:
     "Family-owned, ISA-certified, licensed and insured — MMP Tree Service has served North Metro Atlanta for over a decade.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

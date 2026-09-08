@@ -9,14 +9,12 @@ import { getGoogleReviews, GOOGLE_REVIEWS_URL } from "@/lib/googleReviews";
 // Real job photos where we have them, Unsplash stand-ins otherwise — same
 // images used in the client-approved design prototype.
 const SERVICE_IMAGES: Record<string, string> = {
-  "tree-removal":
-    "https://mmptreeservice.com/wp-content/uploads/2025/12/MMP-Tree-Service-LLC-tree-removal-scaled-375x525.jpg",
+  "tree-removal": "/images/services/tree-removal.jpg",
   "tree-trimming": "/images/services/tree-trimming.jpeg",
   "stump-grinding": "/images/services/stump-grinding.jpg",
   "lot-clearing":
     "https://images.unsplash.com/photo-1476231682828-37e571bc172f?auto=format&fit=crop&w=800&q=80",
-  "emergency-tree-service":
-    "https://mmptreeservice.com/wp-content/uploads/2026/01/Emergency-Tree-Service-MMP-Tree-Service-LLC-scaled-375x525.jpg",
+  "emergency-tree-service": "/images/services/emergency-tree-service.jpg",
 };
 
 export default async function HomePage() {
@@ -117,7 +115,7 @@ export default async function HomePage() {
           </div>
           <div>
             <img
-              src="https://mmptreeservice.com/wp-content/uploads/2026/01/MMP-Tree-Service-testimonials-768x1024.jpeg"
+              src="/images/crew-at-work.jpeg"
               alt="MMP Tree Service crew at work"
               width={768}
               height={1024}

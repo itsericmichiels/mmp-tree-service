@@ -4,6 +4,7 @@ import { EstimateForm } from "@/components/EstimateForm";
 export const metadata = {
   title: "Contact MMP Tree Service LLC | Free Estimate",
   description: "Call (470) 403-0215 or request a free estimate online — available 24/7 for emergencies.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

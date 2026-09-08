@@ -2,7 +2,10 @@ import { getAllMedia } from "@/lib/media";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Our Work | MMP Tree Service LLC" };
+export const metadata = {
+  title: "Our Work | MMP Tree Service LLC",
+  alternates: { canonical: "/our-work" },
+};
 
 export default async function OurWorkPage() {
   const media = await getAllMedia();

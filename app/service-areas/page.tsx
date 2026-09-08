@@ -6,6 +6,7 @@ export const metadata = {
   title: "Tree Service Areas | MMP Tree Service LLC",
   description:
     "MMP Tree Service proudly serves 27 North Metro Atlanta communities. Find tree removal, trimming, and stump grinding near you.",
+  alternates: { canonical: "/service-areas" },
 };
 
 export default function ServiceAreasPage() {
