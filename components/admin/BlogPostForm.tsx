@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { slugify } from "@/lib/slugify";
-import { countLinks } from "@/lib/linkCount";
+import { analyzeSeo } from "@/lib/seoChecklist";
 import type { BlogPost } from "@/lib/blog";
 
 export function BlogPostForm({
@@ -20,9 +20,20 @@ export function BlogPostForm({
   const [title, setTitle] = useState(initialPost?.title ?? "");
   const [slug, setSlug] = useState(initialPost?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [coverImageAlt, setCoverImageAlt] = useState(initialPost?.coverImageAlt ?? "");
+  const [seoDescription, setSeoDescription] = useState(initialPost?.seoDescription ?? "");
   const [body, setBody] = useState(initialPost?.bodyMarkdown ?? "");
+  const [focusKeyword, setFocusKeyword] = useState(initialPost?.focusKeyword ?? "");
 
-  const linkCounts = countLinks(body);
+  const checks = analyzeSeo({
+    title,
+    slug,
+    seoDescription,
+    bodyMarkdown: body,
+    focusKeyword,
+    coverImageAlt,
+  });
+  const passedCount = checks.filter((c) => c.passed).length;
 
   function handleTitleChange(value: string) {
     setTitle(value);
@@ -34,6 +45,21 @@ export function BlogPostForm({
   return (
     <form action={action} className="estimate-panel">
       <input type="hidden" name="mode" value={initialPost ? "edit" : "create"} />
+      <div className="form-field">
+        <label htmlFor="focusKeyword">Focus Keyword</label>
+        <input
+          id="focusKeyword"
+          name="focusKeyword"
+          type="text"
+          value={focusKeyword}
+          onChange={(e) => setFocusKeyword(e.target.value)}
+          placeholder="tree removal cost"
+        />
+        <p className="form-note">
+          The main phrase this post targets — checked against the fields below, same as Rank
+          Math / Yoast.
+        </p>
+      </div>
       <div className="form-field">
         <label htmlFor="title">Title</label>
         <input
@@ -89,7 +115,8 @@ export function BlogPostForm({
             id="coverImageAlt"
             name="coverImageAlt"
             type="text"
-            defaultValue={initialPost?.coverImageAlt ?? ""}
+            value={coverImageAlt}
+            onChange={(e) => setCoverImageAlt(e.target.value)}
             required
           />
         </div>
@@ -152,7 +179,8 @@ export function BlogPostForm({
           id="seoDescription"
           name="seoDescription"
           rows={2}
-          defaultValue={initialPost?.seoDescription ?? ""}
+          value={seoDescription}
+          onChange={(e) => setSeoDescription(e.target.value)}
           required
         />
       </div>
@@ -166,19 +194,24 @@ export function BlogPostForm({
           onChange={(e) => setBody(e.target.value)}
           required
         />
-        <p
-          className="form-note"
-          style={{ color: linkCounts.internal >= 5 ? "var(--green)" : "var(--ink-soft)" }}
-        >
-          Internal links: {linkCounts.internal}/5 {linkCounts.internal >= 5 ? "✓" : ""}
-        </p>
-        <p
-          className="form-note"
-          style={{ color: linkCounts.external >= 5 ? "var(--green)" : "var(--ink-soft)" }}
-        >
-          External links: {linkCounts.external}/5 {linkCounts.external >= 5 ? "✓" : ""}
-        </p>
       </div>
+
+      <div className="seo-checklist">
+        <h4>
+          SEO Checklist{" "}
+          <span className="form-note" style={{ display: "inline" }}>
+            ({passedCount}/{checks.length})
+          </span>
+        </h4>
+        <ul>
+          {checks.map((check) => (
+            <li key={check.id} className={check.passed ? "seo-checklist__pass" : "seo-checklist__fail"}>
+              {check.passed ? "✓" : "○"} {check.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <button type="submit" className="btn btn-orange btn-block">
         {initialPost ? "Save Changes" : "Publish Post"}
       </button>

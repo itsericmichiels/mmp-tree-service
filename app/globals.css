@@ -379,6 +379,19 @@ img{ max-width:100%; display:block; }
 }
 .form-note{ font-size:.76rem; color: var(--ink-soft); margin-top: 10px; text-align:center; }
 
+.seo-checklist{
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+.seo-checklist h4{ margin-bottom: 10px; }
+.seo-checklist ul{ list-style:none; padding:0; margin:0; display:grid; gap:6px; }
+.seo-checklist li{ font-size:.85rem; }
+.seo-checklist__pass{ color: var(--green-deep); font-weight:700; }
+.seo-checklist__fail{ color: var(--ink-soft); }
+
 .estimate-cta-band{
   background: linear-gradient(135deg, var(--green-deep), var(--green));
   border-radius: var(--radius);

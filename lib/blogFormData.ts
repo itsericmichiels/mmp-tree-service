@@ -16,5 +16,6 @@ export function buildPostFromFormData(formData: FormData): BlogPost {
     seoTitle: String(formData.get("seoTitle") ?? ""),
     seoDescription: String(formData.get("seoDescription") ?? ""),
     bodyMarkdown: String(formData.get("bodyMarkdown") ?? ""),
+    focusKeyword: String(formData.get("focusKeyword") ?? ""),
   };
 }

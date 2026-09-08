@@ -13,6 +13,7 @@ export type BlogPost = {
   seoTitle: string;
   seoDescription: string;
   bodyMarkdown: string;
+  focusKeyword: string;
 };
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -35,6 +36,7 @@ type BlogPostRow = {
   seo_title: string;
   seo_description: string;
   body_markdown: string;
+  focus_keyword: string;
 };
 
 function fromRow(row: BlogPostRow): BlogPost {
@@ -50,6 +52,7 @@ function fromRow(row: BlogPostRow): BlogPost {
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
     bodyMarkdown: row.body_markdown,
+    focusKeyword: row.focus_keyword ?? "",
   };
 }
 
@@ -94,6 +97,7 @@ export async function savePost(post: BlogPost): Promise<void> {
     seo_title: post.seoTitle,
     seo_description: post.seoDescription,
     body_markdown: post.bodyMarkdown,
+    focus_keyword: post.focusKeyword,
   });
   if (error) throw new Error(`Failed to save post: ${error.message}`);
 }

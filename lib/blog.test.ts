@@ -22,6 +22,7 @@ function makePost(overrides: Partial<BlogPost> = {}): BlogPost {
     seoTitle: "SEO Title",
     seoDescription: "SEO description",
     bodyMarkdown: "Body text.",
+    focusKeyword: "",
     ...overrides,
   };
 }

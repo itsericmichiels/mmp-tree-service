@@ -44,6 +44,7 @@ describe("BlogPostForm auto-slug behavior", () => {
       seoTitle: "Existing Post SEO",
       seoDescription: "SEO description.",
       bodyMarkdown: "Body.",
+      focusKeyword: "",
     };
 
     render(
@@ -81,6 +82,7 @@ describe("BlogPostForm category/tags/alt fields", () => {
       seoTitle: "Existing Post SEO",
       seoDescription: "SEO description.",
       bodyMarkdown: "Body.",
+      focusKeyword: "",
     };
 
     render(
@@ -98,5 +100,34 @@ describe("BlogPostForm category/tags/alt fields", () => {
       "Existing alt text"
     );
     expect(screen.getByText("Tree Care Tips")).toBeInTheDocument();
+  });
+});
+
+describe("BlogPostForm SEO checklist", () => {
+  it("updates live as the focus keyword and title are edited", () => {
+    render(<BlogPostForm action={() => {}} slugEditable={true} categories={[]} />);
+
+    expect(screen.getByText(/Focus keyword appears in the title/)).toHaveClass(
+      "seo-checklist__fail"
+    );
+
+    fireEvent.change(screen.getByLabelText("Focus Keyword"), {
+      target: { value: "tree removal" },
+    });
+    fireEvent.change(screen.getByLabelText("Title", { exact: true }), {
+      target: { value: "Tree Removal Cost Guide" },
+    });
+
+    expect(screen.getByText(/Focus keyword appears in the title/)).toHaveClass(
+      "seo-checklist__pass"
+    );
+  });
+
+  it("submits the focus keyword as a form field", () => {
+    render(<BlogPostForm action={() => {}} slugEditable={true} categories={[]} />);
+    const input = screen.getByLabelText("Focus Keyword") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "stump grinding" } });
+    expect(input.name).toBe("focusKeyword");
+    expect(input.value).toBe("stump grinding");
   });
 });

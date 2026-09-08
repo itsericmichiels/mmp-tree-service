@@ -27,6 +27,7 @@ describe("buildPostFromFormData", () => {
       seoTitle: "Test Post SEO",
       seoDescription: "SEO description.",
       bodyMarkdown: "Body text here.",
+      focusKeyword: "",
     });
   });
 
