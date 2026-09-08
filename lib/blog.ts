@@ -1,6 +1,8 @@
 // lib/blog.ts
 import { supabase } from "./supabase";
 
+export type BlogPostStatus = "draft" | "published";
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -14,6 +16,7 @@ export type BlogPost = {
   seoDescription: string;
   bodyMarkdown: string;
   focusKeyword: string;
+  status: BlogPostStatus;
 };
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -37,6 +40,7 @@ type BlogPostRow = {
   seo_description: string;
   body_markdown: string;
   focus_keyword: string;
+  status: BlogPostStatus;
 };
 
 function fromRow(row: BlogPostRow): BlogPost {
@@ -53,6 +57,7 @@ function fromRow(row: BlogPostRow): BlogPost {
     seoDescription: row.seo_description,
     bodyMarkdown: row.body_markdown,
     focusKeyword: row.focus_keyword ?? "",
+    status: row.status ?? "published",
   };
 }
 
@@ -65,11 +70,26 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return data.map(fromRow);
 }
 
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("status", "published")
+    .order("date", { ascending: false });
+  if (error || !data) return [];
+  return data.map(fromRow);
+}
+
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   if (!SLUG_PATTERN.test(slug)) return null;
   const { data, error } = await supabase.from("blog_posts").select("*").eq("slug", slug).maybeSingle();
   if (error || !data) return null;
   return fromRow(data);
+}
+
+export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | null> {
+  const post = await getPostBySlug(slug);
+  return post && post.status === "published" ? post : null;
 }
 
 export async function uniqueSlug(desiredSlug: string): Promise<string> {
@@ -98,6 +118,12 @@ export async function savePost(post: BlogPost): Promise<void> {
     seo_description: post.seoDescription,
     body_markdown: post.bodyMarkdown,
     focus_keyword: post.focusKeyword,
+    status: post.status,
   });
   if (error) throw new Error(`Failed to save post: ${error.message}`);
+}
+
+export async function publishPost(slug: string): Promise<void> {
+  const { error } = await supabase.from("blog_posts").update({ status: "published" }).eq("slug", slug);
+  if (error) throw new Error(`Failed to publish post: ${error.message}`);
 }

@@ -28,6 +28,7 @@ describe("buildPostFromFormData", () => {
       seoDescription: "SEO description.",
       bodyMarkdown: "Body text here.",
       focusKeyword: "",
+      status: "published",
     });
   });
 
@@ -37,5 +38,18 @@ describe("buildPostFromFormData", () => {
     const post = buildPostFromFormData(formData);
     expect(post.title).toBe("");
     expect(post.bodyMarkdown).toBe("");
+  });
+
+  it("defaults status to published when not set", () => {
+    const formData = new FormData();
+    formData.set("slug", "minimal-post");
+    expect(buildPostFromFormData(formData).status).toBe("published");
+  });
+
+  it("reads status as draft when explicitly set to draft", () => {
+    const formData = new FormData();
+    formData.set("slug", "minimal-post");
+    formData.set("status", "draft");
+    expect(buildPostFromFormData(formData).status).toBe("draft");
   });
 });

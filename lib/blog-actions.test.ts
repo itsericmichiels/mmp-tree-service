@@ -3,15 +3,18 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const savePost = vi.fn();
 const getPostBySlug = vi.fn();
 const uniqueSlug = vi.fn();
+const publishPost = vi.fn();
 const addCategory = vi.fn();
 const redirect = vi.fn((url: string) => {
   throw new Error(`REDIRECT:${url}`);
 });
+const revalidatePath = vi.fn();
 
 vi.mock("@/lib/blog", () => ({
   savePost,
   getPostBySlug,
   uniqueSlug,
+  publishPost,
 }));
 
 vi.mock("@/lib/blog-categories", () => ({
@@ -20,6 +23,10 @@ vi.mock("@/lib/blog-categories", () => ({
 
 vi.mock("next/navigation", () => ({
   redirect,
+}));
+
+vi.mock("next/cache", () => ({
+  revalidatePath,
 }));
 
 function formDataFor(mode: "create" | "edit", slug = "my-post") {
@@ -80,5 +87,43 @@ describe("savePostAction", () => {
 
     expect(uniqueSlug).not.toHaveBeenCalled();
     expect(savePost).toHaveBeenCalledWith(expect.objectContaining({ slug: "my-post" }));
+  });
+
+  it("redirects to /admin/blog instead of the public post when saving a draft", async () => {
+    const { savePostAction } = await import("./blog-actions");
+    getPostBySlug.mockReturnValue(null);
+    const formData = formDataFor("create", "draft-post");
+    formData.set("status", "draft");
+
+    await expect(savePostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
+
+    expect(savePost).toHaveBeenCalledWith(expect.objectContaining({ status: "draft" }));
+  });
+});
+
+describe("approvePostAction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("publishes the post, revalidates its paths, and redirects to /admin/blog", async () => {
+    const { approvePostAction } = await import("./blog-actions");
+    const formData = new FormData();
+    formData.set("slug", "pending-post");
+
+    await expect(approvePostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
+
+    expect(publishPost).toHaveBeenCalledWith("pending-post");
+    expect(revalidatePath).toHaveBeenCalledWith("/blog");
+    expect(revalidatePath).toHaveBeenCalledWith("/blog/pending-post");
+  });
+
+  it("does nothing and still redirects when no slug is provided", async () => {
+    const { approvePostAction } = await import("./blog-actions");
+    const formData = new FormData();
+
+    await expect(approvePostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
+
+    expect(publishPost).not.toHaveBeenCalled();
   });
 });

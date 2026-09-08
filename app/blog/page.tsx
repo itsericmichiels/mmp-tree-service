@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts } from "@/lib/blog";
+import { getPublishedPosts } from "@/lib/blog";
 import { getCategories } from "@/lib/blog-categories";
 import { BlogPostCard } from "@/components/BlogPostCard";
 
@@ -16,7 +16,7 @@ export default async function BlogIndexPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const allPosts = await getAllPosts();
+  const allPosts = await getPublishedPosts();
   const categories = await getCategories();
   const posts = category ? allPosts.filter((p) => p.category === category) : allPosts;
 

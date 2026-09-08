@@ -23,6 +23,7 @@ function makePost(overrides: Partial<BlogPost> = {}): BlogPost {
     seoDescription: "SEO description",
     bodyMarkdown: "Body text.",
     focusKeyword: "",
+    status: "published",
     ...overrides,
   };
 }
@@ -113,6 +114,47 @@ describe("savePost", () => {
     const posts = await getAllPosts();
     expect(posts).toHaveLength(1);
     expect(posts[0].title).toBe("Second Version");
+  });
+});
+
+describe("getPublishedPosts / getPublishedPostBySlug", () => {
+  it("getPublishedPosts excludes drafts", async () => {
+    const { savePost, getPublishedPosts } = await import("./blog");
+    await savePost(makePost({ slug: "live-post", status: "published" }));
+    await savePost(makePost({ slug: "draft-post", status: "draft" }));
+
+    const posts = await getPublishedPosts();
+    expect(posts.map((p) => p.slug)).toEqual(["live-post"]);
+  });
+
+  it("getPublishedPostBySlug returns null for a draft, even though it exists", async () => {
+    const { savePost, getPublishedPostBySlug } = await import("./blog");
+    await savePost(makePost({ slug: "draft-post", status: "draft" }));
+
+    expect(await getPublishedPostBySlug("draft-post")).toBeNull();
+  });
+
+  it("getPublishedPostBySlug returns the post when it is published", async () => {
+    const { savePost, getPublishedPostBySlug } = await import("./blog");
+    await savePost(makePost({ slug: "live-post", status: "published", title: "Live Post" }));
+
+    expect((await getPublishedPostBySlug("live-post"))?.title).toBe("Live Post");
+  });
+});
+
+describe("publishPost", () => {
+  it("flips a draft to published without changing anything else", async () => {
+    const { savePost, publishPost, getPostBySlug, getPublishedPostBySlug } = await import("./blog");
+    await savePost(makePost({ slug: "pending-post", status: "draft", title: "Pending Post" }));
+
+    expect(await getPublishedPostBySlug("pending-post")).toBeNull();
+
+    await publishPost("pending-post");
+
+    const post = await getPostBySlug("pending-post");
+    expect(post?.status).toBe("published");
+    expect(post?.title).toBe("Pending Post");
+    expect((await getPublishedPostBySlug("pending-post"))?.title).toBe("Pending Post");
   });
 });
 

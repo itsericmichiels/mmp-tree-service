@@ -45,6 +45,7 @@ describe("BlogPostForm auto-slug behavior", () => {
       seoDescription: "SEO description.",
       bodyMarkdown: "Body.",
       focusKeyword: "",
+      status: "published" as const,
     };
 
     render(
@@ -83,6 +84,7 @@ describe("BlogPostForm category/tags/alt fields", () => {
       seoDescription: "SEO description.",
       bodyMarkdown: "Body.",
       focusKeyword: "",
+      status: "published" as const,
     };
 
     render(

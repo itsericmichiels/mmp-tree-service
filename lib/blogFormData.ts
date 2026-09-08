@@ -1,4 +1,8 @@
-import type { BlogPost } from "./blog";
+import type { BlogPost, BlogPostStatus } from "./blog";
+
+function parseStatus(value: FormDataEntryValue | null): BlogPostStatus {
+  return value === "draft" ? "draft" : "published";
+}
 
 export function buildPostFromFormData(formData: FormData): BlogPost {
   return {
@@ -17,5 +21,6 @@ export function buildPostFromFormData(formData: FormData): BlogPost {
     seoDescription: String(formData.get("seoDescription") ?? ""),
     bodyMarkdown: String(formData.get("bodyMarkdown") ?? ""),
     focusKeyword: String(formData.get("focusKeyword") ?? ""),
+    status: parseStatus(formData.get("status")),
   };
 }

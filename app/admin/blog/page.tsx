@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
+import { approvePostAction } from "@/lib/blog-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export const metadata = {
 
 export default async function AdminBlogListPage() {
   const posts = await getAllPosts();
+  const pending = posts.filter((p) => p.status === "draft");
+  const published = posts.filter((p) => p.status === "published");
 
   return (
     <section className="section">
@@ -19,11 +22,35 @@ export default async function AdminBlogListPage() {
             New Post
           </Link>
         </div>
-        {posts.length === 0 ? (
-          <p>No posts yet.</p>
+
+        <h2>Pending Approval {pending.length > 0 ? `(${pending.length})` : ""}</h2>
+        {pending.length === 0 ? (
+          <p className="form-note" style={{ textAlign: "left" }}>
+            Nothing waiting on approval right now.
+          </p>
+        ) : (
+          <ul style={{ marginBottom: 32 }}>
+            {pending.map((post) => (
+              <li key={post.slug} style={{ marginBottom: 12 }}>
+                <strong>{post.title}</strong> — {post.date} —{" "}
+                <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link>{" "}
+                <form action={approvePostAction} style={{ display: "inline" }}>
+                  <input type="hidden" name="slug" value={post.slug} />
+                  <button type="submit" className="btn btn-green btn-sm">
+                    Approve &amp; Publish
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <h2>Published</h2>
+        {published.length === 0 ? (
+          <p>No posts published yet.</p>
         ) : (
           <ul>
-            {posts.map((post) => (
+            {published.map((post) => (
               <li key={post.slug} style={{ marginBottom: 12 }}>
                 <strong>{post.title}</strong> — {post.date} —{" "}
                 <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link> —{" "}

@@ -18,6 +18,7 @@ create table if not exists blog_posts (
   seo_description text not null default '',
   body_markdown text not null default '',
   focus_keyword text not null default '',
+  status text not null default 'published',
   created_at timestamptz not null default now()
 );
 

@@ -45,6 +45,7 @@ export function BlogPostForm({
   return (
     <form action={action} className="estimate-panel">
       <input type="hidden" name="mode" value={initialPost ? "edit" : "create"} />
+      <input type="hidden" name="status" value={initialPost?.status ?? "published"} />
       <div className="form-field">
         <label htmlFor="focusKeyword">Focus Keyword</label>
         <input

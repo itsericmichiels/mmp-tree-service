@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/lib/blog";
+import { getPublishedPostBySlug } from "@/lib/blog";
 import { renderMarkdownToHtml } from "@/lib/markdown";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = await getPublishedPostBySlug(slug);
   if (!post) return {};
   return {
     title: post.seoTitle,
@@ -39,7 +39,7 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = await getPublishedPostBySlug(slug);
 
   if (!post) {
     notFound();
