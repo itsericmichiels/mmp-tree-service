@@ -1,9 +1,14 @@
 import { SITE_URL } from "@/lib/site";
+import { socialTags } from "@/lib/seo";
+
+const TITLE = "Terms & Privacy Policy | MMP Tree Service LLC";
+const DESCRIPTION = "Terms and conditions and privacy policy for MMP Tree Service LLC.";
 
 export const metadata = {
-  title: "Terms & Privacy Policy | MMP Tree Service LLC",
-  description: "Terms and conditions and privacy policy for MMP Tree Service LLC.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/terms" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default function TermsPage() {

@@ -1,10 +1,16 @@
 import { getAllMedia } from "@/lib/media";
+import { socialTags } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
+const TITLE = "Our Work | MMP Tree Service LLC";
+const DESCRIPTION = "Recent tree removal, trimming, and stump grinding jobs across North Metro Atlanta.";
+
 export const metadata = {
-  title: "Our Work | MMP Tree Service LLC",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/our-work" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default async function OurWorkPage() {

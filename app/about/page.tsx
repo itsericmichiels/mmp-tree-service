@@ -1,8 +1,14 @@
+import { socialTags } from "@/lib/seo";
+
+const TITLE = "About MMP Tree Service LLC | North Metro Atlanta";
+const DESCRIPTION =
+  "Family-owned, ISA-certified, licensed and insured — MMP Tree Service has served North Metro Atlanta for over a decade.";
+
 export const metadata = {
-  title: "About MMP Tree Service LLC | North Metro Atlanta",
-  description:
-    "Family-owned, ISA-certified, licensed and insured — MMP Tree Service has served North Metro Atlanta for over a decade.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/about" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default function AboutPage() {

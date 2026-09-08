@@ -9,6 +9,7 @@ import { ServiceCityTemplate } from "@/components/ServiceCityTemplate";
 import { GeneralServiceTemplate } from "@/components/GeneralServiceTemplate";
 import { getHeroImageUrl } from "@/lib/hero-images";
 import { getGoogleReviews } from "@/lib/googleReviews";
+import { socialTags } from "@/lib/seo";
 
 const DEFAULT_METADATA: Metadata = {
   title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
@@ -20,6 +21,7 @@ function truncate(text: string, maxLength = 160): string {
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 }
+
 
 export function generateStaticParams() {
   return builtSlugs().map((slug) => ({ slug }));
@@ -39,12 +41,15 @@ export async function generateMetadata({
 
   if (resolved.type === "generalService") {
     const generalContent = GENERAL_SERVICE_CONTENT[resolved.service.slug];
+    const title = `${resolved.service.name} in North Georgia | MMP Tree Service LLC`;
+    const description = generalContent
+      ? truncate(generalContent.intro)
+      : (DEFAULT_METADATA.description as string);
     return {
-      title: `${resolved.service.name} in North Georgia | MMP Tree Service LLC`,
-      description: generalContent
-        ? truncate(generalContent.intro)
-        : DEFAULT_METADATA.description,
+      title,
+      description,
       alternates: { canonical: `/${slug}` },
+      ...socialTags(title, description),
     };
   }
 
@@ -55,21 +60,27 @@ export async function generateMetadata({
   }
 
   if (resolved.type === "hub") {
+    const title = `Tree Service in ${resolved.city.name} | MMP Tree Service LLC`;
+    const description = truncate(content.hub.intro);
     return {
-      title: `Tree Service in ${resolved.city.name} | MMP Tree Service LLC`,
-      description: truncate(content.hub.intro),
+      title,
+      description,
       alternates: { canonical: `/${slug}` },
+      ...socialTags(title, description),
     };
   }
 
   const serviceContent = content.services[resolved.service.slug];
+  const title = `${resolved.service.name} in ${resolved.city.name} | MMP Tree Service LLC`;
+  const description = serviceContent
+    ? truncate(serviceContent.intro)
+    : (DEFAULT_METADATA.description as string);
 
   return {
-    title: `${resolved.service.name} in ${resolved.city.name} | MMP Tree Service LLC`,
-    description: serviceContent
-      ? truncate(serviceContent.intro)
-      : DEFAULT_METADATA.description,
+    title,
+    description,
     alternates: { canonical: `/${slug}` },
+    ...socialTags(title, description),
   };
 }
 

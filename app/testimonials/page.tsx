@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { getGoogleReviews, GOOGLE_REVIEWS_URL } from "@/lib/googleReviews";
+import { socialTags } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { rating, reviewCount } = await getGoogleReviews();
+  const title = "Testimonials | MMP Tree Service LLC";
+  const description = `${rating} out of 5 stars across ${reviewCount} Google reviews — see what MMP Tree Service customers say.`;
   return {
-    title: "Testimonials | MMP Tree Service LLC",
-    description: `${rating} out of 5 stars across ${reviewCount} Google reviews — see what MMP Tree Service customers say.`,
+    title,
+    description,
     alternates: { canonical: "/testimonials" },
+    ...socialTags(title, description),
   };
 }
 

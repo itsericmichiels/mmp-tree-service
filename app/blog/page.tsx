@@ -2,13 +2,18 @@ import Link from "next/link";
 import { getPublishedPosts } from "@/lib/blog";
 import { getCategories } from "@/lib/blog-categories";
 import { BlogPostCard } from "@/components/BlogPostCard";
+import { socialTags } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
+const TITLE = "Blog | MMP Tree Service LLC";
+const DESCRIPTION = "Tree care tips for North Metro Atlanta homeowners.";
+
 export const metadata = {
-  title: "Blog | MMP Tree Service LLC",
-  description: "Tree care tips for North Metro Atlanta homeowners.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/blog" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default async function BlogIndexPage({

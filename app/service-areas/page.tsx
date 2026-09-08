@@ -2,11 +2,17 @@ import Link from "next/link";
 import { CITIES } from "@/lib/cities";
 import { citySlug } from "@/lib/slugs";
 
+import { socialTags } from "@/lib/seo";
+
+const TITLE = "Tree Service Areas | MMP Tree Service LLC";
+const DESCRIPTION =
+  "MMP Tree Service proudly serves 27 North Metro Atlanta communities. Find tree removal, trimming, and stump grinding near you.";
+
 export const metadata = {
-  title: "Tree Service Areas | MMP Tree Service LLC",
-  description:
-    "MMP Tree Service proudly serves 27 North Metro Atlanta communities. Find tree removal, trimming, and stump grinding near you.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/service-areas" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default function ServiceAreasPage() {

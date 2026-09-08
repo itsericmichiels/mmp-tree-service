@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { StickyCta } from "@/components/StickyCta";
 import { CookieConsent } from "@/components/CookieConsent";
 import { SITE_URL } from "@/lib/site";
+import { socialTags } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,12 +24,16 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const DEFAULT_TITLE = "MMP Tree Service LLC | North Metro Atlanta Tree Care";
+const DEFAULT_DESCRIPTION =
+  "Licensed & insured tree removal, trimming, stump grinding, and 24/7 emergency tree service across North Metro Atlanta.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
-  description:
-    "Licensed & insured tree removal, trimming, stump grinding, and 24/7 emergency tree service across North Metro Atlanta.",
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
   alternates: { canonical: "/" },
+  ...socialTags(DEFAULT_TITLE, DEFAULT_DESCRIPTION),
 };
 
 export default function RootLayout({

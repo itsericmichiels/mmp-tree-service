@@ -1,10 +1,17 @@
 import { MapEmbed } from "@/components/MapEmbed";
 import { EstimateForm } from "@/components/EstimateForm";
 
+import { socialTags } from "@/lib/seo";
+
+const TITLE = "Contact MMP Tree Service LLC | Free Estimate";
+const DESCRIPTION =
+  "Call (470) 403-0215 or request a free estimate online — available 24/7 for emergencies.";
+
 export const metadata = {
-  title: "Contact MMP Tree Service LLC | Free Estimate",
-  description: "Call (470) 403-0215 or request a free estimate online — available 24/7 for emergencies.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/contact" },
+  ...socialTags(TITLE, DESCRIPTION),
 };
 
 export default function ContactPage() {
