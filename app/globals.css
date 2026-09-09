@@ -560,8 +560,6 @@ img{ max-width:100%; display:block; }
   padding: 8px;
   z-index: 600;
 }
-.dropdown:hover .dropdown__panel,
-.dropdown:focus-within .dropdown__panel{ display:block; }
 .dropdown__row{
   position:relative;
   display:flex;
@@ -592,9 +590,9 @@ a.dropdown__row:hover{ background: var(--cream); color: var(--green-dark); }
 .dropdown__row-wrapper:focus-within .dropdown__flyout{ display:block; }
 
 /* Dropdown triggers are real <button> elements (SiteHeader.tsx) so the
-   mega-menu can be opened with click or keyboard (Enter/Space), not just
-   CSS :hover/:focus-within. Reset default button chrome so they still look
-   like the .dropdown__row text they replace. */
+   mega-menu opens with click or keyboard (Enter/Space). Reset default
+   button chrome so they still look like the .dropdown__row text they
+   replace. */
 button.dropdown__trigger{
   background:none;
   border:none;
@@ -604,10 +602,13 @@ button.dropdown__trigger{
   cursor:pointer;
 }
 
-/* Click/keyboard-driven open state for the dropdown panels, layered on top
-   of the hover/focus-within behavior above (either being true is enough to
-   open a panel). Declared after the base .dropdown__panel rule so it
-   reliably wins the display cascade. */
+/* Click/keyboard-driven open state — the only way the top-level panel
+   shows. Deliberately not hover-driven: on a client-side route change the
+   header re-renders in the same screen position, so a stationary mouse
+   would otherwise make :hover keep the panel open (and blocking content)
+   on whatever page you land on. Click-based state is reset on navigation
+   (see handleNavLinksClick in SiteHeader.tsx), so this doesn't have that
+   problem. */
 .dropdown__panel.is-open{ display:block; }
 
 /* Mobile nav: hamburger toggle + stacked, click-driven menu ---------------- */
