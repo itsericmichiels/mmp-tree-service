@@ -10,7 +10,7 @@ const PLACE_ID = "ChIJd0Cu-g6f9YgRmSDMc-HVSA0"; // MMP Tree Service LLC, Acworth
 // The API key is restricted to specific HTTP referrers in Google Cloud
 // Console; server-side fetches don't send a browser referrer, so we set
 // one explicitly matching an allowed value.
-const REFERER = "https://mmptreeservice.com/";
+const REFERER = "https://www.mmptreeservice.com/";
 
 // Fallback link for reviews without their own googleMapsUri (the static
 // fallback list) — opens the business's full review list on Google.

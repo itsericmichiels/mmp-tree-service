@@ -15,6 +15,11 @@ describe("countLinks", () => {
     expect(internal).toBe(1);
   });
 
+  it("counts links to the www host as internal too", () => {
+    const { internal } = countLinks("[Home](https://www.mmptreeservice.com/)");
+    expect(internal).toBe(1);
+  });
+
   it("counts other links as external", () => {
     const { external } = countLinks("[ISA](https://www.isa-arbor.com/)");
     expect(external).toBe(1);
