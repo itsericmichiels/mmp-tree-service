@@ -18,11 +18,22 @@ const STATIC_PATHS = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const buildDate = new Date();
   const posts = await getPublishedPosts();
-  const blogPaths = posts.map((post) => `/blog/${post.slug}`);
-  const paths = [...STATIC_PATHS, ...builtSlugs().map((slug) => `/${slug}`), ...blogPaths];
 
-  return paths.map((path) => ({
-    url: `${SITE_URL}${path === "/" ? "" : path}`,
+  const staticAndCityEntries = [...STATIC_PATHS, ...builtSlugs().map((slug) => `/${slug}`)].map(
+    (path) => ({
+      url: `${SITE_URL}${path === "/" ? "" : path}`,
+      lastModified: buildDate,
+      changeFrequency: "monthly" as const,
+    })
+  );
+
+  const blogEntries = posts.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "monthly" as const,
   }));
+
+  return [...staticAndCityEntries, ...blogEntries];
 }

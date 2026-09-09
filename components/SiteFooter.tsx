@@ -23,7 +23,7 @@ export function SiteFooter() {
             </p>
           </div>
           <div>
-            <h4>Services</h4>
+            <h3>Services</h3>
             <ul>
               {SERVICES.map((service) => (
                 <li key={service.slug}>
@@ -41,14 +41,14 @@ export function SiteFooter() {
             </ul>
           </div>
           <div>
-            <h4>Service Areas</h4>
+            <h3>Service Areas</h3>
             <ul>
               <li><Link href="/tree-service-canton-ga">Canton, GA</Link></li>
               <li><Link href="/service-areas">See all 27 cities →</Link></li>
             </ul>
           </div>
           <div>
-            <h4>Contact</h4>
+            <h3>Contact</h3>
             <ul>
               <li>📞 <a href="tel:4704030215">(470) 403-0215</a></li>
               <li>✉️ <a href="mailto:mmptreeservicellc@gmail.com">mmptreeservicellc@gmail.com</a></li>

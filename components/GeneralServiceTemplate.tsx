@@ -147,7 +147,7 @@ export function GeneralServiceTemplate({
           </div>
           {content.faqs.map((faq) => (
             <div className="faq-item" key={faq.question}>
-              <h4>{faq.question}</h4>
+              <h3>{faq.question}</h3>
               <MarkdownBlock markdown={faq.answer} />
             </div>
           ))}
