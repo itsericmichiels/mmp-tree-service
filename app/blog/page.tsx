@@ -7,7 +7,8 @@ import { socialTags } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 const TITLE = "Blog | MMP Tree Service LLC";
-const DESCRIPTION = "Tree care tips for North Metro Atlanta homeowners.";
+const DESCRIPTION =
+  "Practical tree care tips for North Metro Atlanta homeowners — removal, trimming, storm prep, and stump grinding advice from licensed arborists.";
 
 export const metadata = {
   title: TITLE,

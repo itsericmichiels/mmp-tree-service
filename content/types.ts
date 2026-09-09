@@ -23,6 +23,10 @@ export type GeneralServicePageContent = {
   // after the hero, not overlaid on the image.
   heroTagline: string;
   intro: string;
+  // <meta name="description">, 120-155 chars. Written for the search
+  // snippet specifically (service + area + trust signal + phone) — not a
+  // truncation of `intro`, which runs far longer than a snippet allows.
+  metaDescription: string;
   costFactors: {
     title: string;
     intro: string;

@@ -5,6 +5,9 @@ export const LOT_CLEARING_GENERAL_CONTENT: GeneralServicePageContent = {
   heroTagline:
     "Professional lot clearing across North Georgia — from a single overgrown lot to a full building pad.",
 
+  metaDescription:
+    "Lot clearing for builders & homeowners across North Metro Atlanta. Licensed, insured crews, selective clearing available. Call (470) 403-0215.",
+
   intro:
     "Picture a wooded lot you just closed on, thick with scrub pine, privet, and vines so dense you can't see the back property line — and a builder waiting on a cleared pad before permits and financing timelines start slipping. Or maybe it's simpler: a few acres you've owned for years that have grown up wild, and you're finally ready to turn them into usable pasture, a yard the kids can play in, or a defensible buffer around the house. Either way, clearing a lot by hand or with rented equipment usually costs more time and money than it saves, and it's easy to underestimate how much a dense North Georgia lot fights back.\n\nMMP Tree Service clears trees, brush, and stumps in a sequence built to keep equipment access open the whole way through — cutting and removing trees first, then brush and undergrowth, then handling stumps by full removal or [grinding](/stump-grinding) depending on what the site needs next. If you want to keep a few specimen trees, a natural buffer along a property line, or a tree line for privacy, we mark and clear around them selectively rather than taking a scorched-earth approach to the whole parcel. Because permit requirements and tree ordinances vary by city and county across North Georgia, we check what applies to your address during the estimate rather than assuming one set of rules fits every property. MMP works across [North Metro Atlanta](/service-areas), from small residential lots to multi-acre parcels for builders and landowners alike.",
 

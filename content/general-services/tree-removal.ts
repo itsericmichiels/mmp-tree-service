@@ -5,6 +5,9 @@ export const TREE_REMOVAL_GENERAL_CONTENT: GeneralServicePageContent = {
   heroTagline:
     "Safe, professional tree removal across North Georgia — licensed, insured, and ISA-certified.",
 
+  metaDescription:
+    "Professional tree removal across North Metro Atlanta. Licensed, insured, ISA-certified arborists. Free on-site estimates — call (470) 403-0215.",
+
   intro:
     "Imagine waking up to the sound of cracking wood, only to find that the storm overnight finally split the oak you'd been watching all summer — now resting across the fence line, one bad gust away from the roof. Or maybe nothing dramatic has happened yet, just a pine leaning a little more than it used to, or a dead limb that's been dropping bark onto the driveway for weeks. Sooner or later, most North Georgia homeowners face a tree that has to come down, and the difference between a routine job and a real problem usually comes down to who you call.\n\nMMP Tree Service handles tree removal across [North Metro Atlanta](/service-areas), from small ornamental trees on a quarter-acre in-town lot to large hardwoods on multi-acre properties in Cherokee, Cobb, Gwinnett, and Fulton County. Every job starts with a real, in-person assessment — not a phone quote — because the right approach for a tree over a fence line is different from one leaning toward a roof. Our crews are [ISA Certified Arborists](https://www.isa-arbor.com/) working under a licensed, insured, family-owned operation, following [ANSI A300](https://www.tcia.org/) removal standards on every job and sectioning large trees down with rigging rather than a single risky drop wherever a structure or fence is nearby.",
 

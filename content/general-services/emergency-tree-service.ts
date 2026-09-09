@@ -5,6 +5,9 @@ export const EMERGENCY_TREE_SERVICE_GENERAL_CONTENT: GeneralServicePageContent =
   heroTagline:
     "A tree down or leaning after a storm? We answer 24/7 and get crews moving fast across North Georgia.",
 
+  metaDescription:
+    "24/7 emergency tree service across North Metro Atlanta. Licensed, insured ISA-certified arborists for storm damage. Call (470) 403-0215.",
+
   intro:
     "It's usually the middle of the night or the middle of a storm — a crack, a thud, and suddenly there's a tree across the driveway blocking every car in, a limb the size of a telephone pole resting on the roofline, or a big pine that's now leaning hard toward the house after a round of high wind. Nobody plans for this. What matters in the moment is knowing someone will actually pick up the phone, show up, and know how to deal with a tree that's already failed or is about to.\n\nMMP Tree Service runs 24/7 emergency tree response across [North Metro Atlanta](/service-areas), and every call starts with the same priority: get any active hazard stabilized or removed safely, then sort out the rest. Our [ISA Certified Arborists](https://www.isa-arbor.com/) assess the tree, the structure, and anything nearby — power lines included — before any cutting starts, and we provide the kind of documentation and photos that insurers recognize when a claim is involved. During major storm systems, we track [National Weather Service](https://www.weather.gov/) alerts and pre-stage crews and equipment ahead of time where we can, so we're already closer to your neighborhood when the calls start coming in.",
 

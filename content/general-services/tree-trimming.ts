@@ -5,6 +5,9 @@ export const TREE_TRIMMING_GENERAL_CONTENT: GeneralServicePageContent = {
   heroTagline:
     "Professional tree trimming and pruning across North Georgia — licensed, insured, and ISA-certified.",
 
+  metaDescription:
+    "Expert tree trimming & pruning across North Metro Atlanta. ISA-certified arborists, no topping. Licensed & insured. Call (470) 403-0215.",
+
   intro:
     "Imagine a summer thunderstorm rolling through North Georgia, wind gusting through a canopy that hasn't been thinned in years — and a heavy limb overhanging the roofline finally lets go. Or maybe the warning signs are quieter: a branch that's grown into the power line at the edge of the yard, a maple crowding the gutters, or a tree that just looks shaggier and more lopsided every summer. Regular trimming is one of the few things a homeowner can do ahead of time to keep a tree from becoming a storm-season liability, and it's also what keeps a healthy tree healthy for decades.\n\nMMP Tree Service provides tree trimming and pruning across [North Metro Atlanta](/service-areas), from a single ornamental tree near the front porch to full-property pruning on multi-acre lots in Cherokee, Cobb, Gwinnett, and Fulton County. Our crews are [ISA Certified Arborists](https://www.isa-arbor.com/) who prune to [ANSI A300](https://www.tcia.org/) standards, making proper structural cuts at the branch collar to encourage healthy regrowth rather than topping a tree — a fast, cheap-looking shortcut that weakens the structure, invites decay, and often costs more to correct later. We don't top trees, and we'll explain why during your estimate if another company has suggested it.",
 

@@ -5,6 +5,9 @@ export const STUMP_GRINDING_GENERAL_CONTENT: GeneralServicePageContent = {
   heroTagline:
     "Fast, thorough stump grinding across North Georgia — reclaim your yard for good.",
 
+  metaDescription:
+    "Stump grinding below grade across North Metro Atlanta. Licensed, insured tree pros built for tough North Georgia clay. Call (470) 403-0215.",
+
   intro:
     "Picture mowing around the same stubborn stump for the third summer in a row, angling the mower just to avoid another jolt to the blades — or a kid tripping over one in the side yard where a swing set is supposed to go. Maybe you finally removed a tree yourself or through another crew, and now a flat, ugly patch of yard is stuck waiting on a stump that's still very much in the way of new landscaping, a garden bed, or just a clean-looking lawn. Stump grinding is usually the last step nobody thinks about until it's the only thing left standing between them and the yard they actually want.\n\nMMP Tree Service grinds stumps of every size across [North Metro Atlanta](/service-areas), using professional-grade grinding equipment that chews a stump down below grade rather than leaving a shallow dip that resurfaces in a year. North Georgia's Piedmont clay soil is part of why this isn't always a quick job — that dense red clay grips roots tighter than the looser, sandier soil found in other parts of the country, which means it takes the right machine and the right technique to grind a stump out completely instead of just skimming the top. Whether it's a single stump left over from a [tree removal](/tree-removal) or a whole cluster from a [cleared lot](/lot-clearing), we quote it in person and grind it right the first time.",
 
