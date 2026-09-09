@@ -2,6 +2,7 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { loginAsAdmin } from "./helpers/adminAuth";
 
 test("filtering the blog index by category shows only matching posts", async ({ page }) => {
   const slugA = `e2e-category-a-${Date.now()}`;
@@ -10,6 +11,7 @@ test("filtering the blog index by category shows only matching posts", async ({ 
   const pathB = path.join(process.cwd(), "content/blog/posts", `${slugB}.md`);
 
   try {
+    await loginAsAdmin(page);
     await page.goto("/admin/blog/new");
     await page.getByLabel("Title", { exact: true }).fill("Storm Post For Filter Test");
     await page.getByLabel("URL Slug").fill(slugA);

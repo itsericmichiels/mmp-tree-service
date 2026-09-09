@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
-import { approvePostAction } from "@/lib/blog-actions";
+import { approvePostAction, unpublishPostAction } from "@/lib/blog-actions";
+import { logoutAction } from "@/app/admin/login/actions";
+import { formatDisplayDate } from "@/lib/formatDate";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +20,16 @@ export default async function AdminBlogListPage() {
       <div className="container">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <h1>Blog Admin</h1>
-          <Link href="/admin/blog/new" className="btn btn-orange">
-            New Post
-          </Link>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <Link href="/admin/blog/new" className="btn btn-orange">
+              New Post
+            </Link>
+            <form action={logoutAction}>
+              <button type="submit" className="btn btn-sm" style={{ background: "#6b7280", color: "#fff" }}>
+                Log Out
+              </button>
+            </form>
+          </div>
         </div>
 
         <h2>Pending Approval {pending.length > 0 ? `(${pending.length})` : ""}</h2>
@@ -32,7 +41,7 @@ export default async function AdminBlogListPage() {
           <ul style={{ marginBottom: 32 }}>
             {pending.map((post) => (
               <li key={post.slug} style={{ marginBottom: 12 }}>
-                <strong>{post.title}</strong> — {post.date} —{" "}
+                <strong>{post.title}</strong> — {formatDisplayDate(post.date)} —{" "}
                 <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link>{" "}
                 <form action={approvePostAction} style={{ display: "inline" }}>
                   <input type="hidden" name="slug" value={post.slug} />
@@ -52,9 +61,19 @@ export default async function AdminBlogListPage() {
           <ul>
             {published.map((post) => (
               <li key={post.slug} style={{ marginBottom: 12 }}>
-                <strong>{post.title}</strong> — {post.date} —{" "}
+                <strong>{post.title}</strong> — {formatDisplayDate(post.date)} —{" "}
                 <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link> —{" "}
-                <Link href={`/blog/${post.slug}`}>View</Link>
+                <Link href={`/blog/${post.slug}`}>View</Link>{" "}
+                <form action={unpublishPostAction} style={{ display: "inline" }}>
+                  <input type="hidden" name="slug" value={post.slug} />
+                  <button
+                    type="submit"
+                    className="btn btn-sm"
+                    style={{ background: "#6b7280", color: "#fff" }}
+                  >
+                    Unpublish
+                  </button>
+                </form>
               </li>
             ))}
           </ul>

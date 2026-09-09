@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedPostBySlug } from "@/lib/blog";
 import { renderMarkdownToHtml } from "@/lib/markdown";
+import { formatDisplayDate } from "@/lib/formatDate";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
+import { EstimateMapSection } from "@/components/EstimateMapSection";
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +73,7 @@ export default async function BlogPostPage({
       />
       <section className="section">
         <div className="container" style={{ maxWidth: 760 }}>
-          <p style={{ color: "var(--ink-soft)", fontSize: ".85rem" }}>{post.date}</p>
+          <p style={{ color: "var(--ink-soft)", fontSize: ".85rem" }}>{formatDisplayDate(post.date)}</p>
           <h1>{post.title}</h1>
           <img
             src={post.coverImage}
@@ -88,15 +89,7 @@ export default async function BlogPostPage({
           <div dangerouslySetInnerHTML={{ __html: html }} />
         </div>
       </section>
-      <section className="estimate-cta-band" style={{ margin: "0 24px 60px" }}>
-        <div>
-          <h3>Need Tree Service in North Metro Atlanta?</h3>
-          <p>Get a free, no-obligation estimate from MMP Tree Service.</p>
-        </div>
-        <Link href="/contact" className="btn btn-orange">
-          Get a Free Estimate
-        </Link>
-      </section>
+      <EstimateMapSection />
     </>
   );
 }

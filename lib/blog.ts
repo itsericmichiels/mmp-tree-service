@@ -127,3 +127,8 @@ export async function publishPost(slug: string): Promise<void> {
   const { error } = await supabase.from("blog_posts").update({ status: "published" }).eq("slug", slug);
   if (error) throw new Error(`Failed to publish post: ${error.message}`);
 }
+
+export async function unpublishPost(slug: string): Promise<void> {
+  const { error } = await supabase.from("blog_posts").update({ status: "draft" }).eq("slug", slug);
+  if (error) throw new Error(`Failed to unpublish post: ${error.message}`);
+}

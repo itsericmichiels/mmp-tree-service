@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogPost } from "@/lib/blog";
+import { formatDisplayDate } from "@/lib/formatDate";
 
 export function BlogPostCard({ post }: { post: BlogPost }) {
   return (
@@ -9,7 +10,7 @@ export function BlogPostCard({ post }: { post: BlogPost }) {
         {post.category && <span className="tag">{post.category}</span>}
         <h3>{post.title}</h3>
         <p>{post.excerpt}</p>
-        <p style={{ fontSize: ".8rem", color: "var(--ink-soft)" }}>{post.date}</p>
+        <p style={{ fontSize: ".8rem", color: "var(--ink-soft)" }}>{formatDisplayDate(post.date)}</p>
         <Link className="card__link" href={`/blog/${post.slug}`}>
           Read more →
         </Link>

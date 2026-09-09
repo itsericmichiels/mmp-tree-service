@@ -154,7 +154,8 @@ img{ max-width:100%; display:block; }
 .nav__brand-text{ font-family: var(--font-poppins), 'Poppins', sans-serif; font-weight:700; color:var(--green-deep); line-height:1.1; }
 .nav__brand-text small{ display:block; font-weight:500; color: var(--ink-soft); font-size:.7rem; letter-spacing:.05em; }
 .nav__links{ display:flex; align-items:center; gap: 26px; }
-.nav__links a{
+.nav__links a,
+.nav__links button.dropdown__trigger{
   color: var(--ink);
   font-weight: 600;
   font-size: .92rem;
@@ -524,7 +525,8 @@ img{ max-width:100%; display:block; }
   .nav__brand{ gap:8px; }
   .nav{ gap:12px; padding:12px 16px; }
   .nav__links{ gap:12px; }
-  .nav__links a{ font-size:.82rem; white-space:nowrap; }
+  .nav__links a,
+  .nav__links button.dropdown__trigger{ font-size:.82rem; white-space:nowrap; }
   .nav__cta{ gap:10px; }
 }
 @media (max-width: 1100px){

@@ -4,6 +4,7 @@ import { getAllHeroAssignments } from "@/lib/hero-images";
 import { builtSlugs } from "@/lib/slugs";
 import { MediaUploadForm } from "@/components/admin/MediaUploadForm";
 import { MediaGalleryItem } from "@/components/admin/MediaGalleryItem";
+import { logoutAction } from "@/app/admin/login/actions";
 import {
   uploadMediaAction,
   deleteMediaAction,
@@ -31,7 +32,14 @@ export default async function AdminMediaPage({
   return (
     <section className="section">
       <div className="container">
-        <h1>Media Library</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h1>Media Library</h1>
+          <form action={logoutAction}>
+            <button type="submit" className="btn btn-sm" style={{ background: "#6b7280", color: "#fff" }}>
+              Log Out
+            </button>
+          </form>
+        </div>
         {error && (
           <p className="form-note" style={{ color: "#c0392b", textAlign: "left" }}>
             {decodeURIComponent(error)}

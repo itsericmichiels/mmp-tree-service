@@ -2,12 +2,14 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { loginAsAdmin } from "./helpers/adminAuth";
 
 test("creating a post via admin makes it live on the blog", async ({ page }) => {
   const uniqueSlug = `e2e-test-post-${Date.now()}`;
   const postFilePath = path.join(process.cwd(), "content/blog/posts", `${uniqueSlug}.md`);
 
   try {
+    await loginAsAdmin(page);
     await page.goto("/admin/blog/new");
 
     await page.getByLabel("Title", { exact: true }).fill("E2E Test Post");
@@ -53,6 +55,7 @@ test("editing a post keeps its slug and updates its content", async ({ page }) =
   const postFilePath = path.join(process.cwd(), "content/blog/posts", `${uniqueSlug}.md`);
 
   try {
+    await loginAsAdmin(page);
     await page.goto("/admin/blog/new");
     await page.getByLabel("Title", { exact: true }).fill("Original Title");
     await page.getByLabel("URL Slug").fill(uniqueSlug);
