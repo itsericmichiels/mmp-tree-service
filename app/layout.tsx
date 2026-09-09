@@ -8,6 +8,8 @@ import { StickyCta } from "@/components/StickyCta";
 import { CookieConsent } from "@/components/CookieConsent";
 import { SITE_URL } from "@/lib/site";
 import { socialTags } from "@/lib/seo";
+import { buildLocalBusinessSchema } from "@/lib/localBusinessSchema";
+import { getGoogleReviews } from "@/lib/googleReviews";
 import "./globals.css";
 
 const inter = Inter({
@@ -36,14 +38,25 @@ export const metadata: Metadata = {
   ...socialTags(DEFAULT_TITLE, DEFAULT_DESCRIPTION),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { rating, reviewCount } = await getGoogleReviews();
+  const localBusinessSchema = buildLocalBusinessSchema(rating, reviewCount);
+
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
+        <script
+          type="application/ld+json"
+          // Escape `<` to prevent HTML-parser-level script tag breakout —
+          // see the identical note in app/blog/[slug]/page.tsx.
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema).replace(/</g, "\\u003c"),
+          }}
+        />
         <SiteHeader />
         {children}
         <SiteFooter />

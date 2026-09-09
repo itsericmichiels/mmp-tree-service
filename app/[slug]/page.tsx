@@ -1,7 +1,7 @@
 // app/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { resolveSlug, builtSlugs } from "@/lib/slugs";
+import { resolveSlug, builtSlugs, citySlug } from "@/lib/slugs";
 import { CITY_CONTENT } from "@/content";
 import { GENERAL_SERVICE_CONTENT } from "@/content/generalServices";
 import { CityHubTemplate } from "@/components/CityHubTemplate";
@@ -10,6 +10,9 @@ import { GeneralServiceTemplate } from "@/components/GeneralServiceTemplate";
 import { getHeroImageUrl } from "@/lib/hero-images";
 import { getGoogleReviews } from "@/lib/googleReviews";
 import { socialTags } from "@/lib/seo";
+import { buildServiceSchema, buildBreadcrumbSchema } from "@/lib/pageSchema";
+import { JsonLd } from "@/components/JsonLd";
+import { CITIES } from "@/lib/cities";
 
 const DEFAULT_METADATA: Metadata = {
   title: "MMP Tree Service LLC | North Metro Atlanta Tree Care",
@@ -102,8 +105,22 @@ export default async function CityOrServicePage({
       notFound();
     }
     const reviews = await getGoogleReviews();
+    const builtCityNames = CITIES.filter((c) => c.isBuilt).map((c) => c.name);
+    const serviceSchema = buildServiceSchema({
+      serviceType: resolved.service.name,
+      areaServed: builtCityNames,
+      path: `/${slug}`,
+    });
+    const breadcrumbSchema = buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: resolved.service.name, path: `/${slug}` },
+    ]);
     return (
-      <GeneralServiceTemplate service={resolved.service} content={generalContent} reviews={reviews} />
+      <>
+        <JsonLd data={serviceSchema} />
+        <JsonLd data={breadcrumbSchema} />
+        <GeneralServiceTemplate service={resolved.service} content={generalContent} reviews={reviews} />
+      </>
     );
   }
 
@@ -119,17 +136,41 @@ export default async function CityOrServicePage({
   const heroImageUrl = (await getHeroImageUrl(slug)) ?? undefined;
 
   if (resolved.type === "hub") {
+    const breadcrumbSchema = buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Service Areas", path: "/service-areas" },
+      { name: resolved.city.name, path: `/${slug}` },
+    ]);
     return (
-      <CityHubTemplate city={resolved.city} content={content.hub} heroImageUrl={heroImageUrl} />
+      <>
+        <JsonLd data={breadcrumbSchema} />
+        <CityHubTemplate city={resolved.city} content={content.hub} heroImageUrl={heroImageUrl} />
+      </>
     );
   }
 
+  const serviceSchema = buildServiceSchema({
+    serviceType: resolved.service.name,
+    areaServed: [resolved.city.name],
+    path: `/${slug}`,
+  });
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Service Areas", path: "/service-areas" },
+    { name: resolved.city.name, path: `/${citySlug(resolved.city)}` },
+    { name: resolved.service.name, path: `/${slug}` },
+  ]);
+
   return (
-    <ServiceCityTemplate
-      city={resolved.city}
-      service={resolved.service}
-      content={content.services[resolved.service.slug]}
-      heroImageUrl={heroImageUrl}
-    />
+    <>
+      <JsonLd data={serviceSchema} />
+      <JsonLd data={breadcrumbSchema} />
+      <ServiceCityTemplate
+        city={resolved.city}
+        service={resolved.service}
+        content={content.services[resolved.service.slug]}
+        heroImageUrl={heroImageUrl}
+      />
+    </>
   );
 }
