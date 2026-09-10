@@ -36,3 +36,4 @@ post verbatim.
 ## Completed
 
 - How to tell if a tree is dying or already dead
+- Signs a tree is a hazard and needs removal before storm season
