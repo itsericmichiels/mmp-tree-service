@@ -42,7 +42,10 @@ export default async function AdminBlogListPage() {
             {pending.map((post) => (
               <li key={post.slug} style={{ marginBottom: 12 }}>
                 <strong>{post.title}</strong> — {formatDisplayDate(post.date)} —{" "}
-                <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link>{" "}
+                <Link href={`/admin/blog/${post.slug}/edit`}>Edit</Link> —{" "}
+                <Link href={`/blog/${post.slug}`} target="_blank">
+                  Preview
+                </Link>{" "}
                 <form action={approvePostAction} style={{ display: "inline" }}>
                   <input type="hidden" name="slug" value={post.slug} />
                   <button type="submit" className="btn btn-green btn-sm">

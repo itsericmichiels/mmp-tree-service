@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { getPublishedPostBySlug } from "@/lib/blog";
+import { getPostBySlug, type BlogPost } from "@/lib/blog";
+import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/adminAuth";
 import { renderMarkdownToHtml } from "@/lib/markdown";
 import { formatDisplayDate } from "@/lib/formatDate";
 import { SITE_URL, absoluteUrl } from "@/lib/site";
@@ -7,18 +9,31 @@ import { EstimateMapSection } from "@/components/EstimateMapSection";
 
 export const dynamic = "force-dynamic";
 
+// A draft is only ever shown to whoever is logged into /admin — this is how
+// the business owner previews a post before hitting Approve & Publish. It
+// stays a normal 404 for everyone else, same as a slug that doesn't exist.
+async function getViewablePost(slug: string): Promise<BlogPost | null> {
+  const post = await getPostBySlug(slug);
+  if (!post) return null;
+  if (post.status === "published") return post;
+
+  const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
+  return (await verifySessionToken(token)) ? post : null;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPublishedPostBySlug(slug);
+  const post = await getViewablePost(slug);
   if (!post) return {};
   return {
     title: post.seoTitle,
     description: post.seoDescription,
     alternates: { canonical: `/blog/${post.slug}` },
+    robots: post.status === "draft" ? { index: false, follow: false } : undefined,
     openGraph: {
       title: post.seoTitle,
       description: post.seoDescription,
@@ -41,7 +56,7 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPublishedPostBySlug(slug);
+  const post = await getViewablePost(slug);
 
   if (!post) {
     notFound();
@@ -73,6 +88,21 @@ export default async function BlogPostPage({
       />
       <section className="section">
         <div className="container" style={{ maxWidth: 760 }}>
+          {post.status === "draft" && (
+            <p
+              style={{
+                background: "#fff3cd",
+                color: "#664d03",
+                padding: "10px 16px",
+                borderRadius: "var(--radius-sm)",
+                fontWeight: 600,
+                marginBottom: 20,
+              }}
+            >
+              Draft preview — only visible to you while logged into /admin. Not live on the public
+              site yet.
+            </p>
+          )}
           <p style={{ color: "var(--ink-soft)", fontSize: ".85rem" }}>{formatDisplayDate(post.date)}</p>
           <h1>{post.title}</h1>
           <img
