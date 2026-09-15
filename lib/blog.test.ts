@@ -158,6 +158,22 @@ describe("publishPost", () => {
   });
 });
 
+describe("unpublishPost", () => {
+  it("flips a published post back to draft without changing anything else", async () => {
+    const { savePost, unpublishPost, getPostBySlug, getPublishedPostBySlug } = await import("./blog");
+    await savePost(makePost({ slug: "live-post-2", status: "published", title: "Live Post 2" }));
+
+    expect((await getPublishedPostBySlug("live-post-2"))?.title).toBe("Live Post 2");
+
+    await unpublishPost("live-post-2");
+
+    const post = await getPostBySlug("live-post-2");
+    expect(post?.status).toBe("draft");
+    expect(post?.title).toBe("Live Post 2");
+    expect(await getPublishedPostBySlug("live-post-2")).toBeNull();
+  });
+});
+
 describe("uniqueSlug / create-mode collision handling", () => {
   it("returns the desired slug unchanged when there is no collision", async () => {
     const { uniqueSlug } = await import("./blog");

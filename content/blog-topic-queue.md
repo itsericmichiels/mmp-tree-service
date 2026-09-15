@@ -32,3 +32,8 @@ post verbatim.
 23. What "diameter at breast height" (DBH) means and why cities use it for permits
 24. How root competition affects tree health on smaller residential lots
 25. Choosing between tree trimming and full removal for a declining tree
+
+## Completed
+
+- How to tell if a tree is dying or already dead
+- Signs a tree is a hazard and needs removal before storm season

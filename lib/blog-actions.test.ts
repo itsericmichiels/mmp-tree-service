@@ -4,6 +4,7 @@ const savePost = vi.fn();
 const getPostBySlug = vi.fn();
 const uniqueSlug = vi.fn();
 const publishPost = vi.fn();
+const unpublishPost = vi.fn();
 const addCategory = vi.fn();
 const redirect = vi.fn((url: string) => {
   throw new Error(`REDIRECT:${url}`);
@@ -15,6 +16,7 @@ vi.mock("@/lib/blog", () => ({
   getPostBySlug,
   uniqueSlug,
   publishPost,
+  unpublishPost,
 }));
 
 vi.mock("@/lib/blog-categories", () => ({
@@ -125,5 +127,32 @@ describe("approvePostAction", () => {
     await expect(approvePostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
 
     expect(publishPost).not.toHaveBeenCalled();
+  });
+});
+
+describe("unpublishPostAction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("unpublishes the post, revalidates its paths, and redirects to /admin/blog", async () => {
+    const { unpublishPostAction } = await import("./blog-actions");
+    const formData = new FormData();
+    formData.set("slug", "live-post");
+
+    await expect(unpublishPostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
+
+    expect(unpublishPost).toHaveBeenCalledWith("live-post");
+    expect(revalidatePath).toHaveBeenCalledWith("/blog");
+    expect(revalidatePath).toHaveBeenCalledWith("/blog/live-post");
+  });
+
+  it("does nothing and still redirects when no slug is provided", async () => {
+    const { unpublishPostAction } = await import("./blog-actions");
+    const formData = new FormData();
+
+    await expect(unpublishPostAction(formData)).rejects.toThrow("REDIRECT:/admin/blog");
+
+    expect(unpublishPost).not.toHaveBeenCalled();
   });
 });

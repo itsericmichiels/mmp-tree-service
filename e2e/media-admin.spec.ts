@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
+import { loginAsAdmin } from "./helpers/adminAuth";
 
 const TEST_JPG_BASE64 =
   "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
@@ -65,6 +66,7 @@ test.describe("media library admin", () => {
     uploadedFilePath = fixturePath;
 
     try {
+      await loginAsAdmin(page);
       await page.goto("/admin/media");
       await page.setInputFiles("#file", fixturePath);
       await page.getByLabel("Alt Text").fill("E2E test job photo");
@@ -113,6 +115,7 @@ test.describe("media library admin", () => {
     uploadedFilePath = fixturePath;
 
     try {
+      await loginAsAdmin(page);
       await page.goto("/admin/media");
       await page.setInputFiles("#file", fixturePath);
       await page.getByLabel("Alt Text").fill("E2E hero test photo");
