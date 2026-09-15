@@ -17,6 +17,8 @@ export function EstimateForm() {
         data-height="1125"
         data-layout-iframe-id="inline-YGc0izXgK5e9BeLVlDvU"
         data-form-id="YGc0izXgK5e9BeLVlDvU"
+        data-cookie-consent="true"
+        data-cookie-consent-provider="auto"
         title="Request a Free Estimate MMP Tree Service LLC"
       />
     </div>
