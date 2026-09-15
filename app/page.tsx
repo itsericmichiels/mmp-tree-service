@@ -57,7 +57,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="service">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">What We Do</span>
