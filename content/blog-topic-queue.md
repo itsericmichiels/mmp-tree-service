@@ -37,3 +37,5 @@ post verbatim.
 
 - How to tell if a tree is dying or already dead
 - Signs a tree is a hazard and needs removal before storm season
+- What tree removal actually costs in North Georgia (factors that move the price)
+- Stump grinding vs. stump removal: which one you actually need
