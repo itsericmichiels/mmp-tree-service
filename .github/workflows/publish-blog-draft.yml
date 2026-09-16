@@ -1,0 +1,96 @@
+name: Publish pending blog drafts
+
+# Watches content/pending-drafts/ for new post files, submits each one to the
+# site's blog-drafts ingest API, then removes the file and marks its topic
+# used in content/blog-topic-queue.md. This lets an agent without direct
+# internet access (e.g. a sandboxed Claude session) publish a draft by
+# committing a file instead of calling the API itself.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/pending-drafts/*.json"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-blog-draft
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Submit pending drafts
+        env:
+          INGEST_SECRET: ${{ secrets.BLOG_INGEST_SECRET }}
+          INGEST_URL: https://mmptreeservice.com/api/blog-drafts
+        run: |
+          set -euo pipefail
+
+          if [ -z "${INGEST_SECRET:-}" ]; then
+            echo "::error::BLOG_INGEST_SECRET repo secret is not set. Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+          shopt -s nullglob
+          files=(content/pending-drafts/*.json)
+
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No pending drafts found, nothing to do."
+            exit 0
+          fi
+
+          changed=0
+
+          for file in "${files[@]}"; do
+            echo "Processing $file"
+
+            topic=$(jq -r '.topicQueueEntry // empty' "$file")
+            payload=$(jq 'del(.topicQueueEntry)' "$file")
+
+            http_code=$(curl -sS -o /tmp/response.json -w '%{http_code}' \
+              -X POST "$INGEST_URL" \
+              -H "x-ingest-secret: $INGEST_SECRET" \
+              -H "content-type: application/json" \
+              --data "$payload")
+
+            echo "Response status: $http_code"
+            cat /tmp/response.json
+            echo
+
+            if [ "$http_code" != "201" ]; then
+              echo "::error::Submitting $file failed with status $http_code. Leaving the file in place for a human to look at."
+              exit 1
+            fi
+
+            ok=$(jq -r '.ok // false' /tmp/response.json)
+            if [ "$ok" != "true" ]; then
+              echo "::error::Submitting $file returned 201 but ok was not true. Leaving the file in place for a human to look at."
+              exit 1
+            fi
+
+            git rm -q "$file"
+
+            if [ -n "$topic" ]; then
+              printf '\n- %s\n' "$topic" >> content/blog-topic-queue.md
+              git add content/blog-topic-queue.md
+            fi
+
+            changed=1
+          done
+
+          if [ "$changed" = "1" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Publish pending blog draft(s) and mark topic(s) used
+
+Submitted automatically by the publish-blog-draft workflow."
+            git push
+          fi
