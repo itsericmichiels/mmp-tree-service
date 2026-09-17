@@ -6,6 +6,12 @@ import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE_SECONDS, createSessionToken } from "@/lib/adminAuth";
 
 function safeNextPath(next: string): string {
+  // "/admin" itself has no page (only /admin/blog, /admin/media, and
+  // /admin/login do), so sending someone back there after login would just
+  // 404 them.
+  if (next === "/admin" || next === "/admin/") {
+    return "/admin/blog";
+  }
   return next.startsWith("/admin") ? next : "/admin/blog";
 }
 
