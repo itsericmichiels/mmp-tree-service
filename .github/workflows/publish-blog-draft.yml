@@ -55,7 +55,7 @@ jobs:
             topic=$(jq -r '.topicQueueEntry // empty' "$file")
             payload=$(jq 'del(.topicQueueEntry)' "$file")
 
-            http_code=$(curl -sS -o /tmp/response.json -w '%{http_code}' \
+            http_code=$(curl -sS -L -o /tmp/response.json -w '%{http_code}' \
               -X POST "$INGEST_URL" \
               -H "x-ingest-secret: $INGEST_SECRET" \
               -H "content-type: application/json" \
