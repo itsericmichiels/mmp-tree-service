@@ -89,8 +89,6 @@ jobs:
           if [ "$changed" = "1" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Publish pending blog draft(s) and mark topic(s) used
-
-Submitted automatically by the publish-blog-draft workflow."
+            git commit -m "Publish pending blog draft(s) and mark topic(s) used (automated)"
             git push
           fi
