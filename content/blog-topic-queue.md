@@ -41,3 +41,4 @@ post verbatim.
 - Stump grinding vs. stump removal: which one you actually need
 - When to trim trees in Georgia: a seasonal guide
 - Topping trees: why it's bad for the tree and against best practice
+- What to do the day after a storm damages a tree on your property
