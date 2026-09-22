@@ -40,3 +40,4 @@ post verbatim.
 - What tree removal actually costs in North Georgia (factors that move the price)
 - Stump grinding vs. stump removal: which one you actually need
 - When to trim trees in Georgia: a seasonal guide
+- Topping trees: why it's bad for the tree and against best practice

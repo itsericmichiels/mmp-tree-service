@@ -79,7 +79,7 @@ jobs:
             git rm -q "$file"
 
             if [ -n "$topic" ]; then
-              printf '- %s\n' "$topic" >> content/blog-topic-queue.md
+              printf -- '- %s\n' "$topic" >> content/blog-topic-queue.md
               git add content/blog-topic-queue.md
             fi
 
