@@ -42,3 +42,8 @@ post verbatim.
 - When to trim trees in Georgia: a seasonal guide
 - Topping trees: why it's bad for the tree and against best practice
 - What to do the day after a storm damages a tree on your property
+- Tree removal permits in North Metro Atlanta: what homeowners need to know
+- How to choose a tree service company (questions to ask before hiring)
+- Why proper pruning matters for oak and hickory trees specifically
+- Preparing your lot for new construction: what "lot clearing" really involves
+- Emergency tree removal: what qualifies and how fast response really is
