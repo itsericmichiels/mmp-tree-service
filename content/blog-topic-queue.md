@@ -47,3 +47,4 @@ post verbatim.
 - Why proper pruning matters for oak and hickory trees specifically
 - Preparing your lot for new construction: what "lot clearing" really involves
 - Emergency tree removal: what qualifies and how fast response really is
+- The real risks of DIY tree removal near power lines
