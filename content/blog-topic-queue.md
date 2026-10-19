@@ -48,3 +48,4 @@ post verbatim.
 - Preparing your lot for new construction: what "lot clearing" really involves
 - Emergency tree removal: what qualifies and how fast response really is
 - The real risks of DIY tree removal near power lines
+- How storm-damaged root systems affect tree stability months later
