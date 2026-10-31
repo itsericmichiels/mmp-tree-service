@@ -1,7 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import Script from "next/script";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { StickyCta } from "@/components/StickyCta";
@@ -62,10 +61,6 @@ export default async function RootLayout({
         <SiteFooter />
         <StickyCta />
         <CookieConsent />
-        <Script
-          src="https://link.contentcreatormachine.com/js/form_embed.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );
