@@ -50,3 +50,4 @@ post verbatim.
 - The real risks of DIY tree removal near power lines
 - How storm-damaged root systems affect tree stability months later
 - Understanding tree preservation ordinances when building or renovating
+- Best practices for protecting mature trees during a home renovation
