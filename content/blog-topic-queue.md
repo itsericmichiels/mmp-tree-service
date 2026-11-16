@@ -51,3 +51,4 @@ post verbatim.
 - How storm-damaged root systems affect tree stability months later
 - Understanding tree preservation ordinances when building or renovating
 - Best practices for protecting mature trees during a home renovation
+- What ISA certification means and why it matters when hiring an arborist
